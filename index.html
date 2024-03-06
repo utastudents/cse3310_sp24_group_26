@@ -1,0 +1,175 @@
+<!doctype html>
+<!--suppress JSUnresolvedReference -->
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title id="appName"></title>
+    <meta name="author" content="Tien Dung Le">
+    <!-- Fonts -->
+    <!-- <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Chivo Mono"> -->
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/bootstrap.css">
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/css/styling.css">
+    <!--suppress JSUnresolvedLibraryURL -->
+    <link rel="stylesheet" href="bootstrap-5.3.3-dist/aos/aos-next/src/sass/aos.scss" />
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
+
+
+</head>
+
+<body>
+<div>
+    <div class="container-fluid custom-footer" data-aos="fade-down">
+        <nav class="navbar navbar-expand-sm navbar-dark container">
+            <a href="index.html" class="navbar-brand" ><img src="asset/navBarIcon.png" width="200" height="70"></a>
+
+
+            <!-- Create ticket to fix this, doesn't respone on click  -->
+            
+            <!--
+                <button class="navbar-toggler collapsed d-flex d-lg-none flex-column justify-content-around" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#toggleMobileMenu" aria-controls="toggleMobileMenu"
+                    aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="toggler-icon top-bar"></span>
+                    <span class="toggler-icon middle-bar"></span>
+                    <span class="toggler-icon bottom-bar"></span>
+
+                </button> 
+            -->
+            
+
+
+            <div class="collapse navbar-collapse" id="toggleMobileMenu">
+                <ul class="navbar-nav ms-auto text-end">
+                    <li>
+                        <a class="nav-link" href="#">HOME</a>
+                    </li>
+                    <li>
+                        <a class="nav-link" href="#leaderboard">LEADERBOARD</a>
+                    </li>
+                    <li>
+                        <a class="nav-link" href="#">PROFILE</a>
+                    </li>
+                    <li>
+                        <a class="nav-link" href="#contact">SUPPORT</a>
+                    </li>
+
+
+                </ul>
+            </div>
+        </nav>
+    </div>
+    <div class="container-fluid custom-body">
+        <div id="home" class="container-fluid text-center flex-column d-flex justify-content-center align-items-center"
+            style="height: 100vh;">
+            <h1 style="font-size: 5vw;">READY TO SEARCH?</h1>
+            <h3 >THERE ARE #_ PLAYERS IN THE LOBBY</h3>
+            <h4 >ENTER YOUR USERNAME TO START</h4>
+
+
+            <form name="userForm">
+                <div class="input-group mb-2 ">
+                    <span class="input-group-text" id="basic-addon1">@</span>
+                    <input name="fname" type="text" class="form-control" placeholder="EX: JOHNLEE123" aria-label="Username"
+
+           
+                        aria-describedby="basic-addon1">
+                </div>
+            </form>
+            <a class="btn btn-primary justify-content-center btn-lg active" onclick=buttonclicked()
+                role="button" aria-pressed="true">START MATCHMAKING</a>
+        </div>
+    </div>
+
+    <!-- DO A FOR EACH LOOP TO DISPLAY THE PLAYERS IN THE LEADERBOARD -->
+    <div data-aos="fade-up" class="d-flex justify-content-center flex-column text-center h-auto pb-5" id="leaderboard">
+        <h1>LEADERBOARD</h1>
+        
+        <table class="container table table-light h5">
+            <tr>
+                <td>RANK</td>
+                <td>PLAYER</td>
+                <td>GAME WON</td>
+            </tr>
+            <tr>
+                <td id="playerRank">1ST</td>
+                <td id="playerName">@JOHNLEE123</td>
+                <td id="playerGame"">12</td>
+            </tr>
+            <tr>
+                <td id="playerRank">2ND</td>
+                <td id="playerName">@JOHN123</td>
+                <td id="playerGame"">10</td>
+            </tr>
+            <tr>
+                <td id="playerRank">3RD</td>
+                <td id="playerName">@JOHN123</td>
+                <td id="playerGame"">10</td>
+            </tr>
+            <tr>
+                <td id="playerRank">4TH</td>
+                <td id="playerName">@JOHN123</td>
+                <td id="playerGame"">10</td>
+            </tr>
+            <tr>
+                <td id="playerRank">5TH</td>
+                <td id="playerName">@JOHN123</td>
+                <td id="playerGame"">10</td>
+            </tr>
+            <tr>
+                <td id="playerRank">6TH</td>
+                <td id="playerName">@JOHN123</td>
+                <td id="playerGame"">10</td>
+            </tr>
+        </table>
+    </div>
+
+    </div>
+
+    <section data-aos="fade-up" id="contact">
+        <div class="container-fluid custom-footer">
+            <div class="container d-flex flex-wrap justify-content-between align-items-center custom-contact">
+                <p class="display-1">CONTACT US:</p>
+                <ul class="list-unstyled">
+                    <li class=" display-5">
+                        <a href=""
+                            class=" text-decoration-none text-light custom-contact-link" target="_blank">CUSTOMER
+                            SUPPORT</a>
+                    </li>
+                    <li class=" display-5">
+                        <a href="#" class="text-decoration-none text-light custom-contact-link" target="_blank">+1 123
+                            456 7890</a>
+                    </li>
+
+                    <li class=" display-5">
+                        <a href="mailto:hello@tienl.dev" class=" text-decoration-none text-light custom-contact-link"
+                            target="_blank">HELLO@GMAIL.COM</a>
+                    </li>
+                </ul>
+            </div>
+            <footer class="text-center py-3">
+                <div>
+                    <p>&copy; 2024 TIEN LE FOR GROUP 26. ALL RIGHTS RESERVED</p>
+                </div>
+            </footer>
+        </div>
+    </section>
+</div>
+
+
+
+
+    <script src="bootstrap-5.3.3-dist/js/bootstrap.js"></script>
+    <script src="bootstrap-5.3.3-dist/js/js.js"></script>
+    <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+    <script src="bootstrap-5.3.3-dist/js/usernameValidation.js"></script>
+
+    <script>AOS.init();</script>
+    <script src="usernameValidation.js"></script>
+
+</body>
+
+</html>

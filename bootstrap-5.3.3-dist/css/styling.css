@@ -1,0 +1,142 @@
+
+body {
+    font-family: 'Chivo Mono', monospace;
+    color: white;
+    background-color: #001427;
+}
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    scroll-behavior: smooth;
+}
+
+@font-face {
+    font-family: 'Chivo Mono';
+    src: url('../font/ChivoMono-VariableFont_wght.ttf') format('truetype');
+
+  }
+
+.navbar-toggler{
+    width: 25px;
+    height: 20px;
+    position: relative;
+    transition: .5s ease-in-out;
+
+}
+.navbar-toggler,
+.navbar-toggler:focus,
+.navbar-toggler:active,
+.navbar-toggler-icon:focus{
+    outline: none;
+    box-shadow: none;
+    border: 0;
+}
+.navbar-toggler span{
+    margin: 0;
+    padding: 0;
+}
+
+.toggler-icon{
+    display: block;
+    position: absolute;
+    height: 2px;
+    width: 100%;
+    background: linear-gradient(263deg, rgba(252,74,74,1) 0%, rgba(0,212,255,1) 100%);
+    border-radius: 1px;
+    opacity: 1;
+    left: 0;
+    transform:rotate(0deg);
+    transition: .25s ease-in-out;
+}
+.middle-bar{
+    margin-top: 0;
+
+}
+.navbar-toggler .top-bar{
+    margin-top:0;
+    transform:rotate(135deg);
+}
+.navbar-toggler .middle-bar{
+    opacity: 0;
+    filter: alpha(opacity=0);
+
+}
+.navbar-toggler .bottom-bar{
+    margin-top: 0;
+    transform:rotate(-135deg);
+}
+.navbar-toggler.collapsed .top-bar{
+    margin-top: -20px;
+    transform:rotate(0deg);
+
+}
+.navbar-toggler.collapsed .middle-bar{
+    opacity: 1;
+    filter: alpha(opacity=100);
+}
+.navbar-toggler.collapsed .bottom-bar{
+    margin-top: 20px;
+    transform:rotate(0deg);
+}
+.navbar-toggler.collapsed .toggler-icon{
+    background: linear-gradient(263deg, rgba(252,74,74,1) 0%, rgba(0,212,255,1) 100%);
+}
+
+
+
+
+@keyframes bounce {
+    0%, 100% {
+        transform: translateY(0);
+    }
+    50% {
+        transform: translateY(-10px);
+    }
+}
+
+.custom-background{
+    border: 2px solid white;
+    background-color: #001b33;
+    height: auto;
+    width: fit-content;
+    padding: 15px;
+    margin: 10px;
+
+}
+
+
+.custom-background-class{
+    border: 2px solid white;
+    background-color: #001b33;
+    height: auto;
+    width: fit-content;
+    padding: 15px;
+    margin-bottom: 20px;
+
+}
+.custom-feature{
+    background-color: cornflowerblue;
+    padding: 5%;
+    height: fit-content;
+}
+.custom-footer{
+    background-color: #001b33;
+}
+.custom-contact{
+    padding-top: 5%;
+}
+
+.custom-contact-link.text-decoration-none::after {
+    content: "";
+    display: block;
+    width: 0;
+    height: 3px;
+    background-color: #fff;
+    transition: width 0.3s ease-in-out; /* Set the transition for the width property */
+}
+
+/* On hover, make the underline fade up */
+.custom-contact-link.text-decoration-none:hover::after {
+    width: 100%;
+}
