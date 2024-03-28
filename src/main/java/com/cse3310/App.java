@@ -25,7 +25,26 @@ import com.google.gson.GsonBuilder;
  */
 public class App extends WebSocketServer
 {
-   
+    //Vector<Game> ActiveGames = new Vector<Game>();
+    int GameID;
+
+    public App(int port){
+
+    }
+
+    public App(InetSocketAddress address){
+
+    }
+
+    public App(int port, Draft_6455 draft){
+
+    }
+
+    @Override
+    public void onOpen(WebSocket conn, ClientHandshake handshake) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'onOpen'");
+    }
 
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
@@ -51,11 +70,7 @@ public class App extends WebSocketServer
         throw new UnsupportedOperationException("Unimplemented method 'onStart'");
     }
 
-    @Override
-    public void onOpen(WebSocket conn, ClientHandshake handshake) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'onOpen'");
-    }
+
 
     public static void main(String[] args) {
         

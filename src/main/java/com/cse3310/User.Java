@@ -7,9 +7,10 @@ public class User
     public int wordCount;
     public int gameWon;
 
-    public void setName(string newUsername)
-    {
+    public void setName(string newUsername){
+
         this.username = newUsername;
+        
     }
 
     public String getName()
