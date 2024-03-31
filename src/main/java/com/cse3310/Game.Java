@@ -7,7 +7,11 @@ public class Game{
     private ArrayList User users;
     public int GameId;
 
+    public Game()
+    {
 
+    }
+    
     public boolean checkVertical(array selectedLetters, int length){
         return true;
     }
