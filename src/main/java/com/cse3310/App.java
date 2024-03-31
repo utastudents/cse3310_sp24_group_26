@@ -19,13 +19,10 @@ import java.util.Vector;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-/**
- * Hello world!
- *
- */
+
 public class App extends WebSocketServer
 {
-    //Vector<Game> ActiveGames = new Vector<Game>();
+    Vector<Game> ActiveGames = new Vector<Game>();
     int GameID;
 
     public App(int port){

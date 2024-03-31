@@ -12,28 +12,28 @@ import java.util.Vector;
 public class WebSocket
 {
     int port;
-    conn connection;
+    Connection con;
     
     @Override
-    public void onOpen(WebSocket conn, ClientHandshake handshake) {
+    public void onOpen(Connection conn, ClientHandshake handshake) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'onOpen'");
     }
 
     @Override
-    public void onClose(WebSocket conn, int code, String reason, boolean remote) {
+    public void onClose(Connection conn, int code, String reason, boolean remote) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'onClose'");
     }
 
     @Override
-    public void onMessage(WebSocket conn, String message) {
+    public void onMessage(Connection conn, String message) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'onMessage'");
     }
 
     @Override
-    public void onError(WebSocket conn, Exception ex) {
+    public void onError(Connection conn, Exception ex) {
         // TODO Auto-generated method stub
         throw new UnsupportedOperationException("Unimplemented method 'onError'");
     }
