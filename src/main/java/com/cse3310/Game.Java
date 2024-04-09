@@ -6,10 +6,11 @@ import java.utils.ArrayList;
 public class Game{
     private ArrayList User users;
     public int GameId;
-
+    public int[][] grid;
+    
     public Game()
     {
-
+        
     }
     
     public boolean checkVertical(array selectedLetters, int length){

@@ -4,4 +4,5 @@ public class UserEvent {
     int GameId;
     User UserId;
     int Button[][];
+    String message;
 }
