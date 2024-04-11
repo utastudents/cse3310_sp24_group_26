@@ -9,7 +9,8 @@ class Coordinate {
         this.y = y;
     }
 
-    public void getCoordinate(){
-        return int[] location = new int[] {x, y};
+    public int[] getCoordinate(){
+        int[] location = new int[] {this.x, this.y};
+        return location;
     }
 }

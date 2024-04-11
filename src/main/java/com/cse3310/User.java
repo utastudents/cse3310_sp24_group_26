@@ -14,7 +14,7 @@ public class User
         this.gameWon = 0;
     }
 
-    public void setName(string newUsername){
+    public void setName(String newUsername){
 
         this.username = newUsername;
         
