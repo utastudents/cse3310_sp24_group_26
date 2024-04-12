@@ -26,15 +26,15 @@ public class App extends WebSocketServer
     int GameID;
 
     public App(int port){
-
+        super(new InetSocketAddress(port));
     }
 
     public App(InetSocketAddress address){
-
+        super(address);
     }
 
     public App(int port, Draft_6455 draft){
-
+        super(new InetSocketAddress(port), Collections.<Draft>singletonList(draft));
     }
 
     @Override
@@ -77,19 +77,32 @@ public class App extends WebSocketServer
 
     @Override
     public void onError(WebSocket conn, Exception ex) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'onError'");
+        ex.printStackTrace();
+        if (conn != null) {
+        // some errors like port binding failed may not be assignable to a specific
+        // websocket
+        }
     }
 
     @Override
     public void onStart() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'onStart'");
+        System.out.println("Server started!");
+        setConnectionLostTimeout(0);
     }
 
-
-
     public static void main(String[] args) {
-        
+        // Set up the http server
+        String envPort = System.getenv("HTTP_PORT");
+        int httpPort = Integer.parseInt(envPort);
+        HttpServer H = new HttpServer(httpPort, "./html");
+        H.start();
+        System.out.println("http Server started on port:" + httpPort);
+
+        // create and start the websocket server
+        envPort = System.getenv("WEBSOCKET_PORT");
+        int socketPort = Integer.parseInt("envPort");
+        App A = new App(socketPort);
+        A.start();
+        System.out.println("websocket Server started on port: " + socketPort);
     }
 }

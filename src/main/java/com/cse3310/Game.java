@@ -32,7 +32,7 @@ public class Game{
 
     }
 
-    public String keepScore(ArrayList score){
+    public String keepScore(ArrayList<User> score){
 
         return "";
     }
