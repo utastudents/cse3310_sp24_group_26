@@ -92,17 +92,22 @@ public class App extends WebSocketServer
 
     public static void main(String[] args) {
         // Set up the http server
-        String envPort = System.getenv("HTTP_PORT");
-        int httpPort = Integer.parseInt(envPort);
-        HttpServer H = new HttpServer(httpPort, "./html");
-        H.start();
-        System.out.println("http Server started on port:" + httpPort);
+        try{
+            String envPort = System.getenv("HTTP_PORT");
+            int httpPort = Integer.parseInt(envPort);
+            HttpServer H = new HttpServer(httpPort, "./html");
+            H.start();
+            System.out.println("http Server started on port:" + httpPort);
 
-        // create and start the websocket server
-        envPort = System.getenv("WEBSOCKET_PORT");
-        int socketPort = Integer.parseInt("envPort");
-        App A = new App(socketPort);
-        A.start();
-        System.out.println("websocket Server started on port: " + socketPort);
+            // create and start the websocket server
+            envPort = System.getenv("WEBSOCKET_PORT");
+            int socketPort = Integer.parseInt("envPort");
+            App A = new App(socketPort);
+            A.start();
+            System.out.println("websocket Server started on port: " + socketPort);
+        }
+        catch (NullPointerException e){ // Checks for environment variable
+            e.printStackTrace();
+        }
     }
 }
