@@ -94,14 +94,26 @@ public class App extends WebSocketServer
         // Set up the http server
         try{
             String envPort = System.getenv("HTTP_PORT");
-            int httpPort = Integer.parseInt(envPort);
+            int httpPort;
+            if(envPort != null){
+                httpPort = Integer.parseInt(envPort);
+            }
+            else{
+                httpPort = 9026;
+            }
             HttpServer H = new HttpServer(httpPort, "./html");
             H.start();
             System.out.println("http Server started on port:" + httpPort);
 
             // create and start the websocket server
             envPort = System.getenv("WEBSOCKET_PORT");
-            int socketPort = Integer.parseInt("envPort");
+            int socketPort;
+            if(envPort != null){
+                socketPort = Integer.parseInt("envPort");
+            }
+            else{
+                socketPort = 9126;
+            }
             App A = new App(socketPort);
             A.start();
             System.out.println("websocket Server started on port: " + socketPort);
