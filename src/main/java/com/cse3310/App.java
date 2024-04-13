@@ -26,20 +26,100 @@ public class App extends WebSocketServer
     int GameID;
 
     public App(int port){
-
+        super(new InetSocketAddress(port));
     }
 
     public App(InetSocketAddress address){
-
+        super(address);
     }
 
     public App(int port, Draft_6455 draft){
-
+        super(new InetSocketAddress(port), Collections.<Draft>singletonList(draft));
     }
 
+    @Override
+    public void onOpen(WebSocket conn, ClientHandshake handshake) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'onOpen'");
+    }
 
+    @Override
+    public void onClose(WebSocket conn, int code, String reason, boolean remote) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'onClose'");
+    }
+
+    @Override
+    public void onMessage(WebSocket conn, String message) {
+        // TODO Auto-generated method stub
+        System.out.println(conn + ": " + message); // Log message in console
+
+        // Bring in the data from the webpage
+        // A UserEvent is all that is allowed at this point
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.create();
+        UserEvent U = gson.fromJson(message, UserEvent.class);
+        System.out.println(U.Button);
+
+        // Get our Game Object
+        Game G = conn.getAttachment();
+        G.Update(U);
+
+        // send out the game state every time
+        // to everyone
+        String jsonString;
+        jsonString = gson.toJson(G);
+
+        System.out.println(jsonString);
+        broadcast(jsonString);
+        throw new UnsupportedOperationException("Unimplemented method 'onMessage'");
+    }
+
+    @Override
+    public void onError(WebSocket conn, Exception ex) {
+        ex.printStackTrace();
+        if (conn != null) {
+        // some errors like port binding failed may not be assignable to a specific
+        // websocket
+        }
+    }
+
+    @Override
+    public void onStart() {
+        System.out.println("Server started!");
+        setConnectionLostTimeout(0);
+    }
 
     public static void main(String[] args) {
-        
+        // Set up the http server
+        try{
+            String envPort = System.getenv("HTTP_PORT");
+            int httpPort;
+            if(envPort != null){
+                httpPort = Integer.parseInt(envPort);
+            }
+            else{
+                httpPort = 9026;
+            }
+            HttpServer H = new HttpServer(httpPort, "./html");
+            H.start();
+            System.out.println("http Server started on port:" + httpPort);
+
+            // create and start the websocket server
+            envPort = System.getenv("WEBSOCKET_PORT");
+            int socketPort;
+            if(envPort != null){
+                socketPort = Integer.parseInt("envPort");
+            }
+            else{
+                socketPort = 9126;
+            }
+            App A = new App(socketPort);
+            A.start();
+            System.out.println("websocket Server started on port: " + socketPort);
+        }
+        catch (NullPointerException e){ // Checks for environment variable
+            e.printStackTrace();
+        }
     }
 }
