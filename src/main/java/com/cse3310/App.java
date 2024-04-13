@@ -101,6 +101,7 @@ public class App extends WebSocketServer
             else{
                 httpPort = 9026;
             }
+
             HttpServer H = new HttpServer(httpPort, "./html");
             H.start();
             System.out.println("http Server started on port:" + httpPort);
@@ -114,6 +115,7 @@ public class App extends WebSocketServer
             else{
                 socketPort = 9126;
             }
+            
             App A = new App(socketPort);
             A.start();
             System.out.println("websocket Server started on port: " + socketPort);
@@ -121,5 +123,7 @@ public class App extends WebSocketServer
         catch (NullPointerException e){ // Checks for environment variable
             e.printStackTrace();
         }
+
+
     }
 }
