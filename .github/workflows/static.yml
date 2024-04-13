@@ -7,10 +7,16 @@
 #
 name: Deploy
 on: [push]
+
+concurrency: production
+
 jobs:
   deploy:
     name: "Deploy to server"
     runs-on: ubuntu-latest
+
+    environment: production
+
     steps:
       - name: configure SSH
         run: |
@@ -34,6 +40,15 @@ jobs:
             IdentityFile ~/.ssh/production.key
             StrictHostKeyChecking no
           END
+        
+      - name: install ssh keys
+        run: |
+          install -m 600 -D /dev/null ~/.ssh/id_rsa
+          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+          ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/known_hosts
+        
+      - name: cleanup
+        run: rm -rf ~/.ssh
                          
       - name: get source code and compile
         run: |
