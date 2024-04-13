@@ -33,19 +33,14 @@ jobs:
           mkdir -p ~/.ssh/
           echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/production.key
           chmod 600 ~/.ssh/production.key
-          cat >>~/.ssh/config <<END
+          cat >>~/.ssh/config <<
+          END
           Host production
             HostName ${{ secrets.SSH_HOST }}
             User ${{ secrets.SSH_USER }}
             IdentityFile ~/.ssh/production.key
             StrictHostKeyChecking no
           END
-        
-      - name: install ssh keys
-        run: |
-          install -m 600 -D /dev/null ~/.ssh/id_rsa
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.SSH_HOST }} > ~/.ssh/authorized_keys
                          
       - name: get source code and compile
         run: |
