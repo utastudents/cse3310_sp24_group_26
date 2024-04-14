@@ -1,6 +1,7 @@
 package com.cse3310;
 
 import java.io.BufferedReader;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
@@ -16,6 +17,7 @@ import org.java_websocket.server.WebSocketServer;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.Vector;
+import java.util.ArrayList;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -24,6 +26,7 @@ public class App extends WebSocketServer
 {
     Vector<Game> ActiveGames = new Vector<Game>();
     int GameID;
+  
 
     public App(int port){
         super(new InetSocketAddress(port));
@@ -91,6 +94,21 @@ public class App extends WebSocketServer
     }
 
     public static void main(String[] args) {
+        String filename = "words.txt";
+        //Read in file of words
+        ArrayList<String> wordList = new ArrayList<>();
+        try(BufferedReader br = new BufferedReader(new FileReader(filename)))
+        {
+            String line;
+            while((line = br.readLine()) != null)
+            {
+                wordList.add(line.trim());
+            }
+        }
+        catch (IOException e)
+        {
+            System.err.println("Error reading file:"+ e.getMessage());
+        }
         // Set up the http server
         try{
             String envPort = System.getenv("HTTP_PORT");
@@ -101,6 +119,7 @@ public class App extends WebSocketServer
             else{
                 httpPort = 9026;
             }
+
             HttpServer H = new HttpServer(httpPort, "./html");
             H.start();
             System.out.println("http Server started on port:" + httpPort);
@@ -114,6 +133,7 @@ public class App extends WebSocketServer
             else{
                 socketPort = 9126;
             }
+            
             App A = new App(socketPort);
             A.start();
             System.out.println("websocket Server started on port: " + socketPort);
@@ -121,5 +141,7 @@ public class App extends WebSocketServer
         catch (NullPointerException e){ // Checks for environment variable
             e.printStackTrace();
         }
+
+
     }
 }

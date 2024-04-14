@@ -5,10 +5,11 @@ import java.util.ArrayList;
 public class Game{
     private ArrayList<User> users;
     public int GameId;
-    public int[][] grid;
+    public char[][] grid;
     
-    public Game()
+    public Game(ArrayList words)
     {
+        grid = new char[50][50];
         
     }
     
