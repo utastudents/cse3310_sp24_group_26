@@ -94,7 +94,6 @@ public class App extends WebSocketServer
     }
 
     public static void main(String[] args) {
-        System.out.println(System.getProperty("user.dir"));
         String filename = "words.txt";
         //Read in file of words
         ArrayList<String> wordList = new ArrayList<>();
