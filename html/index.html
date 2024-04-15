@@ -20,6 +20,8 @@
 
 <body>
 <div>
+    <button id="clickMeBtn" onclick=buttonclick(0)>Click Me</button>
+    <input name="fname" type="text" class="form-control" placeholder="INPUT">
     <div class="container-fluid custom-footer" data-aos="fade-down">
         <nav class="navbar navbar-expand-sm navbar-dark container">
             <a href="index.html" class="navbar-brand" ><img src="../asset/navBarIcon.png" width="200" height="70"></a>
@@ -81,6 +83,12 @@
                 role="button" aria-pressed="true">START MATCHMAKING</a>
         </div>
     </div>
+
+    <div id="lobby" style="display: none;">
+        <table id="lobbyList"></table>
+        <button onclick="toggleReady()" style="display: inline;">Ready</button>
+        <button id="startGameButton" onclick="startGame()">Start Game</button>
+      </div>
 
     <!-- DO A FOR EACH LOOP TO DISPLAY THE PLAYERS IN THE LEADERBOARD -->
     <div data-aos="fade-up" class="d-flex justify-content-center flex-column text-center h-auto pb-5" id="leaderboard">

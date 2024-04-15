@@ -25,6 +25,7 @@ import com.google.gson.GsonBuilder;
 public class App extends WebSocketServer
 {
     Vector<Game> ActiveGames = new Vector<Game>();
+    Vector<User> activeUsers = new Vector<User>();
     int GameID;
   
 
@@ -43,7 +44,8 @@ public class App extends WebSocketServer
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'onOpen'");
+        System.out.println(conn.getRemoteSocketAddress().getAddress().getHostAddress() + " connected");
+
     }
 
     @Override
@@ -54,16 +56,15 @@ public class App extends WebSocketServer
 
     @Override
     public void onMessage(WebSocket conn, String message) {
-        // TODO Auto-generated method stub
-        System.out.println(conn + ": " + message); // Log message in console
-
-        // Bring in the data from the webpage
-        // A UserEvent is all that is allowed at this point
+        System.out.println(conn + ": " + message); 
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
         UserEvent U = gson.fromJson(message, UserEvent.class);
-        System.out.println(U.Button);
-
+        //System.out.println(U.UserID + " sent code " + U.request + " over " + conn);
+        System.out.println("message received with " + U.request);
+        
+    
+/*
         // Get our Game Object
         Game G = conn.getAttachment();
         G.Update(U);
@@ -76,6 +77,7 @@ public class App extends WebSocketServer
         System.out.println(jsonString);
         broadcast(jsonString);
         throw new UnsupportedOperationException("Unimplemented method 'onMessage'");
+*/
     }
 
     @Override
@@ -117,7 +119,7 @@ public class App extends WebSocketServer
                 httpPort = Integer.parseInt(envPort);
             }
             else{
-                httpPort = 9026;
+                httpPort = 9055;
             }
 
             HttpServer H = new HttpServer(httpPort, "./html");
@@ -131,7 +133,7 @@ public class App extends WebSocketServer
                 socketPort = Integer.parseInt("envPort");
             }
             else{
-                socketPort = 9126;
+                socketPort = 9155;
             }
             
             App A = new App(socketPort);
