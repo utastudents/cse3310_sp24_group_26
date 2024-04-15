@@ -26,7 +26,6 @@ public class App extends WebSocketServer
 {
     Vector<Game> ActiveGames = new Vector<Game>();
     int GameID;
-  
 
     public App(int port){
         super(new InetSocketAddress(port));
@@ -97,8 +96,8 @@ public class App extends WebSocketServer
         String filename = "words.txt";
         //Read in file of words
         ArrayList<String> wordList = new ArrayList<>();
-        Game G = new Game(wordList);
-        /*
+        
+    
         try(BufferedReader br = new BufferedReader(new FileReader(filename)))
         {
             String line;
@@ -111,8 +110,8 @@ public class App extends WebSocketServer
         {
             System.err.println("Error reading file:"+ e.getMessage());
         }
-
-        
+        Game G = new Game(wordList);
+        /*
         // Set up the http server
         try{
             String envPort = System.getenv("HTTP_PORT");
