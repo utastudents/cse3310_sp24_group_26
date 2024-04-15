@@ -97,6 +97,8 @@ public class App extends WebSocketServer
         String filename = "words.txt";
         //Read in file of words
         ArrayList<String> wordList = new ArrayList<>();
+        Game G = new Game(wordList);
+        /*
         try(BufferedReader br = new BufferedReader(new FileReader(filename)))
         {
             String line;
@@ -109,6 +111,8 @@ public class App extends WebSocketServer
         {
             System.err.println("Error reading file:"+ e.getMessage());
         }
+
+        
         // Set up the http server
         try{
             String envPort = System.getenv("HTTP_PORT");
@@ -141,7 +145,7 @@ public class App extends WebSocketServer
         catch (NullPointerException e){ // Checks for environment variable
             e.printStackTrace();
         }
-
+        */
 
     }
 }
