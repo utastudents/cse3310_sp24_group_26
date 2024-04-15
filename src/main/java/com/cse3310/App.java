@@ -42,9 +42,55 @@ public class App extends WebSocketServer
 
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
-        System.out.println("New connection opened: " + conn.getRemoteSocketAddress());
-        Game game = new Game();
-        conn.setAttachment(game);
+       System.out.println(conn.getRemoteSocketAddress().getAddress().getHostAddress() + " connected");
+
+    UserEvent E = new UserEvent(0, PlayerType.NoPlayer, 0);  
+
+    //get the name passed by html
+    
+
+    // search for a game needing a player
+    Game G = null;
+    for (Game i : ActiveGames) {
+      if (i.currentTurn == uta.cse3310.PlayerType.Blue) {
+        G = i;
+        System.out.println("found a match");
+      }
+    }
+
+    // No matches? Create a new Game.
+    if (G == null) {
+      G = new Game();
+      G.GameId = gameID;
+      gameID++;
+      // Add the first player
+      G.currentTurn = uta.cse3310.PlayerType.Blue;
+      ActiveGames.add(G);
+      System.out.println("creating a new Game");
+    } else {
+      // join an existing game
+      System.out.println("not a new game");
+      G.currentTurn = uta.cse3310.PlayerType.Red;
+      G.startGame();
+    }
+    System.out.println("G.currentTurn is " + G.currentTurn);
+    // create an event to go to only the new player
+    E.setPlayerType(G.currentTurn);
+    E.gameIdx = G.GameId;
+    // allows the websocket to give us the Game when a message arrives
+    conn.setAttachment(G);
+
+    Gson gson = new Gson();
+    // Note only send to the single connection
+    conn.send(gson.toJson(E));
+    System.out.println(gson.toJson(E));
+
+    // The state of the game has changed, so lets send it to everyone
+    String jsonString;
+    jsonString = gson.toJson(G);
+
+    System.out.println(jsonString);
+    broadcast(jsonString);
 }
 
 
