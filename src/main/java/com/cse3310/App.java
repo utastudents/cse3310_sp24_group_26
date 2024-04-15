@@ -42,9 +42,11 @@ public class App extends WebSocketServer
 
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'onOpen'");
-    }
+        System.out.println("New connection opened: " + conn.getRemoteSocketAddress());
+        Game game = new Game();
+        conn.setAttachment(game);
+}
+
 
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
