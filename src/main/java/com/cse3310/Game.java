@@ -2,15 +2,13 @@ package com.cse3310;
 
 import java.util.ArrayList;
 
-public class Game{
+public class Game {
     private ArrayList<User> users;
     public int GameId;
     public char[][] grid;
     
-    public Game(ArrayList words)
-    {
+    public Game() {
         grid = new char[50][50];
-        
     }
     
     public boolean checkVertical(ArrayList<User> selectedLetters, int length){
@@ -34,7 +32,6 @@ public class Game{
     }
 
     public String keepScore(ArrayList<User> score){
-
         return "";
     }
 
