@@ -113,7 +113,7 @@ public class App extends WebSocketServer
             System.err.println("Error reading file:"+ e.getMessage());
         }
         Game G = new Game(wordList);
-        
+        /*
         // Set up the http server
         try{
             String envPort = System.getenv("HTTP_PORT");
@@ -146,6 +146,7 @@ public class App extends WebSocketServer
         catch (NullPointerException e){ // Checks for environment variable
             e.printStackTrace();
         }
+        */
         
 
     }
