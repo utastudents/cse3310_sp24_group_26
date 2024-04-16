@@ -66,21 +66,25 @@ public class App extends WebSocketServer
         if(U.request == 1){
             User userRequest = new User(U.UserId);
             ActiveUsers.add(userRequest);
-            System.out.println("PRINTING PLAYER LIST");
             for(User x : ActiveUsers){
                 System.out.println(x.username);
             }
 
             LobbyUsers.add(new Lobby(userRequest));
-            System.out.println("PRINTING LOBBY PLAYERS");
-            for(Lobby x : LobbyUsers){
-                System.out.println(x.user + " is " + x.ready);
-            }
 
             String jsonString = gson.toJson(LobbyUsers);
             broadcast(jsonString);
 
+        } else if(U.request == 2){
+            for(Lobby i : LobbyUsers){
+                if(i.user.equals(U.UserId)){
+                    i.ready = !i.ready;
+                }
+            }
+            String jsonString = gson.toJson(LobbyUsers);
+            broadcast(jsonString);
         }
+
         
     
 /*

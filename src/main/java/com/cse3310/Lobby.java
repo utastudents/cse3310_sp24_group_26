@@ -5,6 +5,6 @@ public class Lobby{
     public boolean ready;
     public Lobby(User user){
         this.user = user.username;
-        this.ready = user.ready;
+        this.ready = false;
     }
 }

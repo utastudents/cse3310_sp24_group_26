@@ -47,17 +47,21 @@ connection.onmessage = function(evt){
 }
 
 
-function buttonclicked(){
-    let username = document.getElementById("username").value;
-    console.log("username is trying to join: " + username);
-    this.UserId = username;
+function buttonclicked(value){
     U = new UserEvent;
-    U.UserId = username;
-    U.request = 1;
-    connection.send(JSON.stringify(U));
-    var input = document.getElementById("username");
-    input.value = "";
-    let div = document.getElementById("log-in");
-    div.innerHTML = "";
+    if(value == 1){
+        let username = document.getElementById("username").value;
+        this.UserId = username;
+        U.UserId = username;
+        U.request = 1;
+        connection.send(JSON.stringify(U));
+        let div = document.getElementById("log-in");
+        div.innerHTML = "";
+    } else if (value == 2){
+        U.UserId = this.UserId;
+        U.request = 2;
+        connection.send(JSON.stringify(U));
+    }
+    
     
 }
