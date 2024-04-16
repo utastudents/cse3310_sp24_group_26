@@ -25,7 +25,8 @@ import com.google.gson.GsonBuilder;
 public class App extends WebSocketServer
 {
     Vector<Game> ActiveGames = new Vector<Game>();
-    Vector<User> activeUsers = new Vector<User>();
+    Vector<User> ActiveUsers = new Vector<User>();
+    Vector<Lobby> LobbyUsers = new Vector<Lobby>();
     int GameID;
   
 
@@ -51,7 +52,7 @@ public class App extends WebSocketServer
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'onClose'");
+        System.out.println(conn + " has closed");
     }
 
     @Override
@@ -60,8 +61,26 @@ public class App extends WebSocketServer
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
         UserEvent U = gson.fromJson(message, UserEvent.class);
-        //System.out.println(U.UserID + " sent code " + U.request + " over " + conn);
-        System.out.println("message received with " + U.request);
+        System.out.println(U.UserId + " sent request " + U.request);
+        
+        if(U.request == 1){
+            User userRequest = new User(U.UserId);
+            ActiveUsers.add(userRequest);
+            System.out.println("PRINTING PLAYER LIST");
+            for(User x : ActiveUsers){
+                System.out.println(x.username);
+            }
+
+            LobbyUsers.add(new Lobby(userRequest));
+            System.out.println("PRINTING LOBBY PLAYERS");
+            for(Lobby x : LobbyUsers){
+                System.out.println(x.user + " is " + x.ready);
+            }
+
+            String jsonString = gson.toJson(LobbyUsers);
+            broadcast(jsonString);
+
+        }
         
     
 /*

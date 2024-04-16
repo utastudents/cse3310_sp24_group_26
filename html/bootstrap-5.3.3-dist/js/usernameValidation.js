@@ -4,6 +4,8 @@
 // if true, make object into JSON string and change pages
 // if false, notify user
 
+let UserId = null;
+
 class UserEvent{
     request;
     GameId;
@@ -17,31 +19,45 @@ connection.onopen = function (evt) {
     console.log("open");
 }
 
+connection.onmessage = function(evt){
 
-function buttonclick(i) {
-    U = new UserEvent();
-    U.request = 1;
-    U.UserId = "whit";
-    connection.send(JSON.stringify(U));
-    console.log("BOUTTA SEND");
-    console.log(JSON.stringify(U));
+    let lobby = document.getElementById("lobby-body");
+    lobby.innerHTML = "";
+    var msg;
+    msg = evt.data;
+    let obj = JSON.parse(msg);
+
+    console.log("Message received: " + msg);
+    console.log("NUM USERS: " + obj.length)
+
+    obj.forEach(function(obj){
+        console.log("OBJECT: " + obj)
+        var row = lobby.insertRow();
+        var name = row.insertCell(0);
+        var ready = row.insertCell(1);
+
+        name.textContent = obj.user;
+        if(obj.ready == false){
+            ready.textContent = "Not Ready";
+        } else{
+            ready.textContent = "Ready";
+        }
+        
+    });
 }
 
 
 function buttonclicked(){
-    let username = document.forms["userForm"]["fname"].value;
+    let username = document.getElementById("username").value;
     console.log("username is trying to join: " + username);
-    const user = {
-        username : username
-    }
-    if(username != ""){
-        localStorage.setItem("userJSON", JSON.stringify(user)) //JSON string is saved into local storage so that match.html can access
-        window.location.href = "match.html";
-    }
-    else{
-        document.forms["userForm"]["fname"].value = "";
-        document.forms["userForm"]["fname"].placeholder = "ENTER A USERNAME!";
-    }
-
+    this.UserId = username;
+    U = new UserEvent;
+    U.UserId = username;
+    U.request = 1;
+    connection.send(JSON.stringify(U));
+    var input = document.getElementById("username");
+    input.value = "";
+    let div = document.getElementById("log-in");
+    div.innerHTML = "";
     
 }

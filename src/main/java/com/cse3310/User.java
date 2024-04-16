@@ -3,15 +3,17 @@ package com.cse3310;
 
 public class User
 {
-    private String username;
+    public String username;
     public int wordCount;
     public int gameWon;
+    public boolean ready;
 
     public User(String username)
     {
         this.username = username;
         this.wordCount = 0;
         this.gameWon = 0;
+        this.ready = false;
     }
 
     public void setName(String newUsername){
