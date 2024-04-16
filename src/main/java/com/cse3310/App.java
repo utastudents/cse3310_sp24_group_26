@@ -142,7 +142,7 @@ public class App extends WebSocketServer
                 httpPort = Integer.parseInt(envPort);
             }
             else{
-                httpPort = 9055;
+                httpPort = 9026;
             }
 
             HttpServer H = new HttpServer(httpPort, "./html");
@@ -156,7 +156,7 @@ public class App extends WebSocketServer
                 socketPort = Integer.parseInt("envPort");
             }
             else{
-                socketPort = 9155;
+                socketPort = 9126;
             }
             
             App A = new App(socketPort);
