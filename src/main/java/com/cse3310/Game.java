@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.util.Collections;
 
-public class Game{
+public class Game {
     private ArrayList<User> users;
     public int GameId;
     public char[][] grid;
@@ -125,7 +125,6 @@ public class Game{
     }
 
     public String keepScore(ArrayList<User> score){
-
         return "";
     }
 

@@ -15,7 +15,21 @@
     <!--suppress JSUnresolvedLibraryURL -->
     <link rel="stylesheet" href="bootstrap-5.3.3-dist/aos/aos-next/src/sass/aos.scss" />
     <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
-
+    <style>
+        .wordSearchTable {
+            border-collapse: collapse;
+            font-size: 12px;
+        }
+        
+        td {
+            border: 1px solid #ccc;
+            width: 20px;
+            height:20px;
+            text-align: center;
+            line-height: 15px;
+            margin: 0; 
+        }
+    </style>
 </head>
 
 <body>
@@ -60,25 +74,63 @@
             </div>
         </nav>
     </div>
-    <div class="container-fluid custom-body">
+    <div class="container-fluid custom-body" id="matchmaking">
         <div id="home" class="container-fluid text-center flex-column d-flex justify-content-center align-items-center"
             style="height: 100vh;">
             <h1 style="font-size: 5vw;">READY TO SEARCH?</h1>
             <h3 >THERE ARE #_ PLAYERS IN THE LOBBY</h3>
             <h4 >ENTER YOUR USERNAME TO START</h4>
-
-
             <form name="userForm">
                 <div class="input-group mb-2 ">
                     <span class="input-group-text" id="basic-addon1">@</span>
                     <input name="fname" type="text" class="form-control" placeholder="EX: JOHNLEE123" aria-label="Username"
-
-           
                         aria-describedby="basic-addon1">
                 </div>
             </form>
-            <a class="btn btn-primary justify-content-center btn-lg active" onclick=buttonclicked()
-                role="button" aria-pressed="true">START MATCHMAKING</a>
+            <a class="btn btn-primary justify-content-center btn-lg active" onclick="startMatchmaking()" role="button" aria-pressed="true">
+                START MATCHMAKING
+            </a>
+            
+        </div>
+    </div>
+
+    <div class="container-fluid custom-body h-auto d-none" id="game">
+        <div id="home" class="container-fluid text-center d-flex justify-content-center align-items-center py-3" style="height: fit-content">
+            <div class="container">
+                <div class="py-3 justify-content-center text-center flex-column d-flex container ">
+                    <table class="wordSearchTable" id="wordSearchTable"></table>
+                </div>
+            </div>
+            <div>
+                <table class="h4 table table-light">
+                    <tr class="h3">
+                        <td id="playerOneName">@</td>
+                        <td id="playerOneScore">1</td>
+                        <td>VS</td>
+                        <td id="playerOneScore">2</td>
+                        <td id="playerTwoName">@</td>
+                    </tr>
+                </table>
+                <p>FIND THE WORDS: <span id="wordList"></span></p>
+                <!-- Multi-user chat box -->
+                <div class="container-fluid">
+                    <div class=" row justify-content-center">
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="card-header container-fluid">Chat</div>
+                                <div class="card-body container-fluid" id="chatBox">
+                                    <!-- Chat messages will be displayed here -->
+                                </div>
+                                <div class="card-footer container-fluid">
+                                    <input type="text" class="form-control" id="chatMessage" placeholder="Type your message">
+                                    <button class="btn btn-primary mt-2 container-fluid" id="sendMessage">Send</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
         </div>
     </div>
 
@@ -166,8 +218,80 @@
     <script src="bootstrap-5.3.3-dist/js/usernameValidation.js"></script>
 
     <script>AOS.init();</script>
-    <script src="usernameValidation.js"></script>
+    <!-- <script src="usernameValidation.js"></script> -->
+    <script>
+        document.getElementById("startMatchmakingBtn").addEventListener("click", startMatchmaking);
 
+        function startMatchmaking() {
+            const username = document.forms["userForm"]["fname"].value;
+            if (username.trim() === "") {
+                alert("Please enter a username.");
+                return;
+            }
+
+            // Hide matchmaking form
+            document.getElementById("matchmaking").classList.add("d-none");
+
+            // Show game elements
+            document.getElementById("game").classList.remove("d-none");
+
+            // Update player names
+            document.getElementById("playerOneName").innerText = "@" + username.toUpperCase();
+            document.getElementById("playerTwoName").innerText = "@opponent"; // Replace "opponent" with actual opponent's name
+
+            // Start matchmaking process or any other game initialization logic
+        }
+    </script>
+    <script>
+        const wordsToFind = ['apple', 'banana', 'cherry', 'grape', 'orange', 'pear', 'kiwi', 'peach', 'mango','melon' ];
+        const gridSize = 50;
+        const table = document.getElementById('wordSearchTable');
+        const wordListElement = document.getElementById('wordList');
+
+        // Function to generate a random letter
+        function getRandomLetter() {
+            const alphabet = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+            return alphabet[Math.floor(Math.random() * alphabet.length)];
+        }
+
+        // Function to generate the word search grid
+        function generateWordSearch() {
+            for (let i = 0; i < gridSize; i++) {
+                const row = table.insertRow();
+                for (let j = 0; j < gridSize; j++) {
+                    const cell = row.insertCell();
+                    cell.textContent = getRandomLetter();
+                }
+            }
+        }
+
+        // Function to add words to the grid
+        function addWordsToGrid() {
+            for (const word of wordsToFind) {
+                const direction = Math.random() < 0.5 ? 'horizontal' : 'vertical';
+                const startX = Math.floor(Math.random() * (gridSize - word.length + 1));
+                const startY = Math.floor(Math.random() * (gridSize - word.length + 1));
+
+                for (let i = 0; i < word.length; i++) {
+                    const cell = direction === 'horizontal' ? table.rows[startY].cells[startX + i] : table.rows[startY + i].cells[startX];
+                    cell.textContent = word[i].toUpperCase();
+                }
+            }
+        }
+
+        // Function to display the list of words to find
+        function displayWordList() {
+
+            wordListElement.textContent = wordsToFind.sort()
+                                                     .map(word => word.toUpperCase())
+                                                     .join(', ');
+        }
+
+        // Generate and display the word search
+        generateWordSearch();
+        addWordsToGrid();
+        displayWordList();
+    </script>
 </body>
 
 </html>
