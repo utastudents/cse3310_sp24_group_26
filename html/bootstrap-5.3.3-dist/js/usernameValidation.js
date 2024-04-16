@@ -3,7 +3,6 @@
 // should check if input is empty
 // if true, make object into JSON string and change pages
 // if false, notify user
-
 let UserId = null;
 
 class UserEvent{
@@ -42,7 +41,6 @@ connection.onmessage = function(evt){
         } else{
             ready.textContent = "Ready";
         }
-        
     });
 }
 
@@ -55,13 +53,11 @@ function buttonclicked(value){
         U.UserId = username;
         U.request = 1;
         connection.send(JSON.stringify(U));
-        let div = document.getElementById("log-in");
+        let div = document.getElementById("matchmaking");
         div.innerHTML = "";
     } else if (value == 2){
         U.UserId = this.UserId;
         U.request = 2;
         connection.send(JSON.stringify(U));
     }
-    
-    
 }

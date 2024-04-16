@@ -23,8 +23,8 @@
         
         td {
             border: 1px solid #ccc;
-            width: 15rpx;
-            height:15px;
+            width: 20px;
+            height:20px;
             text-align: center;
             line-height: 15px;
             margin: 0; 
@@ -74,25 +74,20 @@
             </div>
         </nav>
     </div>
-
-    <div class="container-fluid custom-body" id="log-in">
+    <div class="container-fluid custom-body" id="matchmaking">
         <div id="home" class="container-fluid text-center flex-column d-flex justify-content-center align-items-center"
             style="height: 100vh;">
             <h1 style="font-size: 5vw;">READY TO SEARCH?</h1>
             <h3 >THERE ARE #_ PLAYERS IN THE LOBBY</h3>
             <h4 >ENTER YOUR USERNAME TO START</h4>
-
-
             <form name="userForm">
                 <div class="input-group mb-2 ">
                     <span class="input-group-text" id="basic-addon1">@</span>
                     <input id="username" name="fname" type="text" class="form-control" placeholder="EX: JOHNLEE123" aria-label="Username"
-
-           
                         aria-describedby="basic-addon1">
                 </div>
             </form>
-            <a class="btn btn-primary justify-content-center btn-lg active" onclick=buttonclicked(1)
+            <a class="btn btn-primary justify-content-center btn-lg active" onclick="buttonclicked(1);startMatchmaking();"
                 role="button" aria-pressed="true">JOIN LOBBY</a>
         </div>
     </div>
@@ -114,9 +109,13 @@
         <a class="btn btn-primary justify-content-center btn-lg active" onclick=buttonclicked(2)
                 role="button" aria-pressed="true">READY</a>
     </div>
-
-    <div class="container custom-body h-auto">
-        <div id="home" class="container text-center d-flex justify-content-center align-items-center py-3" style="height: fit-content">
+    <div class="container-fluid custom-body h-auto d-none" id="game">
+        <div id="home" class="container-fluid text-center d-flex justify-content-center align-items-center py-3" style="height: fit-content">
+            <div class="container">
+                <div class="py-3 justify-content-center text-center flex-column d-flex container ">
+                    <table class="wordSearchTable" id="wordSearchTable"></table>
+                </div>
+            </div>
             <div>
                 <table class="h4 table table-light">
                     <tr class="h3">
@@ -129,29 +128,24 @@
                 </table>
                 <p>FIND THE WORDS: <span id="wordList"></span></p>
                 <!-- Multi-user chat box -->
-                <div class="container">
-                    <div class="row justify-content-center">
+                <div class="container-fluid">
+                    <div class=" row justify-content-center">
                         <div class="col-md-8">
                             <div class="card">
-                                <div class="card-header">Chat</div>
-                                <div class="card-body" id="chatBox">
+                                <div class="card-header container-fluid">Chat</div>
+                                <div class="card-body container-fluid" id="chatBox">
                                     <!-- Chat messages will be displayed here -->
                                 </div>
-                                <div class="card-footer">
+                                <div class="card-footer container-fluid">
                                     <input type="text" class="form-control" id="chatMessage" placeholder="Type your message">
-                                    <button class="btn btn-primary mt-2" id="sendMessage">Send</button>
+                                    <button class="btn btn-primary mt-2 container-fluid" id="sendMessage">Send</button>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-            <div class="container">
-                <div class="py-3 justify-content-center text-center flex-column d-flex container ">
-                    <table class="wordSearchTable" id="wordSearchTable"></table>
-                </div>
-                <div class="flex"></div>
-            </div>
+            
         </div>
     </div>
 
@@ -239,17 +233,29 @@
     <script src="bootstrap-5.3.3-dist/js/usernameValidation.js"></script>
 
     <script>AOS.init();</script>
-    <script src="usernameValidation.js"></script>
+    <!-- <script src="usernameValidation.js"></script> -->
     <script>
-        let userJSON = localStorage.getItem("userJSON")
-        let user = JSON.parse(userJSON)
+        document.getElementById("startMatchmakingBtn").addEventListener("click", startMatchmaking);
 
-        const playerOneName = user.username;
-        const playerTwoName = "johnsmith124";
-        document.getElementById("playerOneName").innerHTML = "@" + playerOneName.toUpperCase();
-        document.getElementById("playerTwoName").innerHTML = "@" + playerTwoName.toUpperCase();
+        function startMatchmaking() {
+            const username = document.forms["userForm"]["fname"].value;
+            if (username.trim() === "") {
+                alert("Please enter a username.");
+                return;
+            }
 
-        AOS.init();
+            // Hide matchmaking form
+            document.getElementById("matchmaking").classList.add("d-none");
+
+            // Show game elements
+            document.getElementById("game").classList.remove("d-none");
+
+            // Update player names
+            document.getElementById("playerOneName").innerText = "@" + username.toUpperCase();
+            document.getElementById("playerTwoName").innerText = "@opponent"; // Replace "opponent" with actual opponent's name
+
+            // Start matchmaking process or any other game initialization logic
+        }
     </script>
     <script>
         const wordsToFind = ['apple', 'banana', 'cherry', 'grape', 'orange', 'pear', 'kiwi', 'peach', 'mango','melon' ];
