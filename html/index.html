@@ -250,7 +250,7 @@
         }
 
 
-        serverUrl = "ws://" + window.location.hostname +":"+ (parseInt(location.port) + 100);
+        serverUrl = "ws://" + window.location.hostname +":"+ (parseInt(location.port));
         connection = new WebSocket(serverUrl);
         connection.onopen = function (evt) {
             console.log("open");
