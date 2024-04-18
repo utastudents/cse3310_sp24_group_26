@@ -51,7 +51,7 @@ public class App extends WebSocketServer
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
         // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'onClose'");
+        System.out.println(conn + " has closed");
     }
 
     @Override
