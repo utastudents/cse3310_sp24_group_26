@@ -33,6 +33,7 @@ public class Game {
         Random rand = new Random();
         int length = 20;
         int width = 20;
+        int areaPortion = 5;
         char[][] grid = new char[width][length];
         String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         String insertWord; 
@@ -41,34 +42,34 @@ public class Game {
         int startX;
         int dX;
         int dY;
+        int tries;
         boolean fits;
         int validWordsLetters = 0; // For calculating word density
         int[][] directions = {{1,1} , {-1,1} , {0,1} ,{-1,0}, {1,0}};
         double density = .67; // density of grid
+        int maxLength = 10;
+        int areaFactor = 1;
        //Input words into the array
         wordBank = new ArrayList<String>();
         //Take random words from the word list to put inside a word bank
-        int a = 0;
+        int index = 0;
         while(((double)validWordsLetters / (length * width)) < density)
         {
-            wordBank.add(words.get(rand.nextInt(words.size())).toUpperCase());
-            System.out.println(a+"." + wordBank.get(a));
-            validWordsLetters = validWordsLetters + wordBank.get(a).length();
-            a++;
-        }
-        System.out.println(" Actual Density: " + (double)validWordsLetters / (length * width));
-        //For every word in the wordbank
-        for(int b = 0; b < wordBank.size(); b++)
-        {
-            insertWord = wordBank.get(b);
-            /*Algorithm is slow and cannot meet a word density of .67. 
-            Consistent density is around .4 - .5, any higher can cause program 
-            to be stuck*/
-            do
+            
+           
+            String word = words.get(rand.nextInt(words.size())).toUpperCase();
+            while(word.length() > maxLength){
+                word = words.get(rand.nextInt(words.size())).toUpperCase();
+            }
+            wordBank.add(word);
+            tries = 0;
+            insertWord = wordBank.get(index);
+
+             do
             {
                 fits = true;
-                startX = rand.nextInt(length - 1);
-                startY = rand.nextInt(width - 1);
+                startX = rand.nextInt(length);
+                startY = rand.nextInt(width);
                 orientation = rand.nextInt(4);
                 dX = directions[orientation][1];
                 dY = directions[orientation][0];
@@ -77,34 +78,58 @@ public class Game {
                 for(int d = 0; d < insertWord.length(); d++ )
                 {
                     //Check letter by letter if word goes out of bounds of array or writes over an existing one
-                    if(startX + (d * dX) > length - 1 || startX + (d * dX) < 0 || startY + (d * dY) > width - 1 || startY + (d * dY) < 0 || grid[startY + (d * dY)][startX + (d * dX)] != 0)
+                    if(startX + (d * dX) > length - 1|| startX + (d * dX) < 0 || startY + (d * dY) > width - 1
+                        || startY + (d * dY) < 0 || grid[startY + (d * dY)][startX + (d * dX)] != 0)
                     {
                         
                         if(secondCheck == 5)
                         {
                             fits = false;
-                            d = insertWord.length(); // Exit the loop
+                            tries++;
+                            break;
+
                         }
                         else //check every possible direction from starting coordinate
                         {
-                            d = 0;
+                            d = -1;
                             dX = directions[secondCheck][1];
                             dY = directions[secondCheck][0];
                             secondCheck++;
                         }
-
                     }
                 }
-            }while(fits == false);
+            }while(fits == false && tries < 100);
+            if(tries >= 100)
+            {
+                fits = false;
+                wordBank.remove(index);
+            }
 
-
-            for(int c = 0; c < insertWord.length() ; c++)
+            if(fits == true)
+            {
+                for(int c = 0; c < insertWord.length() ; c++)
                 {
                     grid[startY + (c * dY)][startX + (c * dX)] = insertWord.charAt(c);
                     int x = startX + (c * dX);
                     int y = startY + (c * dY);
                     //System.out.println("Putting letter " + insertWord.charAt(c) + " of word " + insertWord + " at index " + y + " " + x);
                 }
+                System.out.println(index + "." + wordBank.get(index));
+                validWordsLetters = validWordsLetters + wordBank.get(index).length();
+                index++;
+            }
+            
+            
+            
+        }
+        System.out.println(" Actual Density: " + (double)validWordsLetters / (length * width));
+        //For every word in the wordbank
+        for(int b = 0; b < wordBank.size(); b++)
+        {
+            /*Algorithm is slow and cannot meet a word density of .67. 
+            Consistent density is around .4 - .5, any higher can cause program 
+            to be stuck*/
+           
 
                 
             
@@ -119,10 +144,13 @@ public class Game {
                 {
                     
                     grid[i][j] = alphabet.charAt(rand.nextInt(alphabet.length()));
-                    System.out.printf("| |");
+                    System.out.printf(" |");
                 }
-                
-                System.out.printf("|" + grid[i][j] + "|");
+                else
+                {
+                    System.out.printf("" + grid[i][j] + "|");
+
+                }
 
                 
             }
