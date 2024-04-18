@@ -1,7 +1,8 @@
 package com.cse3310;
 
 public class UserEvent {
+    int request;
     int GameId;
-    int UserId;
-    int Button[][];
+    String UserId;
+    //int Button[][];
 }

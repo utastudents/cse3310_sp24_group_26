@@ -25,6 +25,8 @@ import com.google.gson.GsonBuilder;
 public class App extends WebSocketServer
 {
     Vector<Game> ActiveGames = new Vector<Game>();
+    Vector<User> ActiveUsers = new Vector<User>();
+    Vector<Lobby> LobbyUsers = new Vector<Lobby>();
     int GameID;
   
 
@@ -43,9 +45,7 @@ public class App extends WebSocketServer
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
         System.out.println(conn.getRemoteSocketAddress().getAddress().getHostAddress() + " connected");
-
-    
-}
+    }
 
 
     @Override
@@ -58,14 +58,34 @@ public class App extends WebSocketServer
     public void onMessage(WebSocket conn, String message) {
         // TODO Auto-generated method stub
         System.out.println(conn + ": " + message); // Log message in console
-
-        // Bring in the data from the webpage
-        // A UserEvent is all that is allowed at this point
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
         UserEvent U = gson.fromJson(message, UserEvent.class);
-        System.out.println(U.Button);
+        System.out.println(U.UserId + " sent request " + U.request);
 
+        if(U.request == 1){
+            User userRequest = new User(U.UserId);
+            ActiveUsers.add(userRequest);
+            for(User x : ActiveUsers){
+                System.out.println(x.username);
+            }
+
+            LobbyUsers.add(new Lobby(userRequest));
+
+            String jsonString = gson.toJson(LobbyUsers);
+            broadcast(jsonString);
+
+        } else if(U.request == 2){
+            for(Lobby i : LobbyUsers){
+                if(i.user.equals(U.UserId)){
+                    i.ready = !i.ready;
+                }
+            }
+            String jsonString = gson.toJson(LobbyUsers);
+            broadcast(jsonString);
+        }
+
+        /* 
         // Get our Game Object
         Game G = conn.getAttachment();
         G.Update(U);
@@ -77,7 +97,8 @@ public class App extends WebSocketServer
 
         System.out.println(jsonString);
         broadcast(jsonString);
-        throw new UnsupportedOperationException("Unimplemented method 'onMessage'");
+        
+        */
     }
 
     @Override
@@ -119,7 +140,7 @@ public class App extends WebSocketServer
                 httpPort = Integer.parseInt(envPort);
             }
             else{
-                httpPort = 9026;
+                httpPort = 9066;
             }
 
             HttpServer H = new HttpServer(httpPort, "./html");
@@ -133,7 +154,7 @@ public class App extends WebSocketServer
                 socketPort = Integer.parseInt("envPort");
             }
             else{
-                socketPort = 9126;
+                socketPort = 9166;
             }
             
             App A = new App(socketPort);
