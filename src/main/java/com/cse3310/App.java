@@ -56,14 +56,14 @@ public class App extends WebSocketServer
 
     @Override
     public void onMessage(WebSocket conn, String message) {
-        // TODO Auto-generated method stub
         System.out.println(conn + ": " + message); // Log message in console
+
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
         UserEvent U = gson.fromJson(message, UserEvent.class);
         System.out.println(U.UserId + " sent request " + U.request);
 
-        if(U.request == 1){
+        if(U.request == 1){ // New user logged in
             User userRequest = new User(U.UserId);
             ActiveUsers.add(userRequest);
             for(User x : ActiveUsers){
@@ -75,7 +75,9 @@ public class App extends WebSocketServer
             String jsonString = gson.toJson(LobbyUsers);
             broadcast(jsonString);
 
-        } else if(U.request == 2){
+        } 
+        else if(U.request == 2) // User readying or unreadying. Update on everyone's screen.
+        { 
             for(Lobby i : LobbyUsers){
                 if(i.user.equals(U.UserId)){
                     i.ready = !i.ready;
@@ -83,6 +85,15 @@ public class App extends WebSocketServer
             }
             String jsonString = gson.toJson(LobbyUsers);
             broadcast(jsonString);
+        }
+        else if (U.request == 3) // User has sent message. Update on everyone's screen;
+        {
+            // Message data already packaged. Just broadcast.
+            // U has:
+            // - request #3
+            // - UserId
+            // - chatMessage
+            broadcast(U);
         }
 
         /* 
@@ -135,12 +146,9 @@ public class App extends WebSocketServer
         // Set up the http server
         try{
             String envPort = System.getenv("HTTP_PORT");
-            int httpPort;
+            int httpPort = 9026;
             if(envPort != null){
-                httpPort = Integer.parseInt(envPort);
-            }
-            else{
-                httpPort = 9026;
+                httpPort = Integer.valueOf(envPort);
             }
 
             HttpServer H = new HttpServer(httpPort, "./html");
@@ -149,12 +157,9 @@ public class App extends WebSocketServer
 
             // create and start the websocket server
             envPort = System.getenv("WEBSOCKET_PORT");
-            int socketPort;
+            int socketPort = 9126;
             if(envPort != null){
-                socketPort = Integer.parseInt("envPort");
-            }
-            else{
-                socketPort = 9126;
+                socketPort = Integer.valueOf("envPort");
             }
             
             App A = new App(socketPort);

@@ -143,7 +143,7 @@
                                 </div>
                                 <div class="card-footer container-fluid">
                                     <input type="text" class="form-control" id="chatMessage" placeholder="Type your message">
-                                    <button class="btn btn-primary mt-2 container-fluid" id="sendMessage">Send</button>
+                                    <button class="btn btn-primary mt-2 container-fluid" id="sendMessage" onclick="sendChatMessage()">Send</button>
                                 </div>
                             </div>
                         </div>
@@ -247,25 +247,42 @@
             request;
             GameId;
             UserId;
+            chatMessage;
         }
 
 
         serverUrl = "ws://" + window.location.hostname +":"+ (parseInt(location.port) + 100);
         connection = new WebSocket(serverUrl);
+        
         connection.onopen = function (evt) {
             console.log("open");
         }
 
+        // Received a broadcast from a different client
         connection.onmessage = function(evt){
 
             let lobby = document.getElementById("lobby-body");
-            lobby.innerHTML = "";
+
             var msg;
             msg = evt.data;
+            
             let obj = JSON.parse(msg);
 
             console.log("Message received: " + msg);
             console.log("NUM USERS: " + obj.length)
+
+            if('request' in obj){   // Is a UserEvent broadcast
+                if(obj.request == 3){   // Is a message sent from someone else
+                    console.log("Chat message received from broadcast: " + obj.chatMessage + "  From userid: " + obj.UserId);
+                    const chatBox = document.getElementById("chatBox");
+
+                    const para = document.createElement("p");
+                    const node = document.createTextNode(obj.chatMessage);
+                    para.appendChild(node);
+
+                    chatBox.appendChild(para);
+                }
+            }
 
             obj.forEach(function(obj){
                 console.log("OBJECT: " + obj)
@@ -292,7 +309,7 @@
                 U.request = 1;
                 connection.send(JSON.stringify(U));
                 let div = document.getElementById("log-in");
-                div.innerHTML = "";
+                div.classList.add("d-none");
             } else if (value == 2){
                 U.UserId = this.UserId;
                 U.request = 2;
@@ -300,8 +317,18 @@
             }
         }
 
+        function sendChatMessage(){
+            const inputBox = document.getElementById("chatMessage");
+            U = new UserEvent;
+            U.UserId = this.UserId;
+            U.chatMessage = inputBox.value; // Store message sent into UserEvent class
+            U.request = 3;
 
-
+            connection.send(JSON.stringify(U)); 
+            
+            // Empty message box after "sending"
+            inputBox.value = "";
+        }
 
         //document.getElementById("startMatchmakingBtn").addEventListener("click", startMatchmaking);
 
@@ -349,6 +376,23 @@
     </script>
 
     <script>
+        class Coordinate {
+            constructor(row, col){
+                this.row = row;
+                this.col = col;
+            }
+        }
+        
+        function getLetterLocation(button){
+            let id = button.id;
+            let row = Math.floor(id / 10);
+            let col = id % 10;
+        
+            let location = new Coordinate(row, col);
+        }
+    </script>
+
+    <script>
         const wordsToFind = ['apple', 'banana', 'cherry', 'grape', 'orange', 'pear', 'kiwi', 'peach', 'mango','melon' ];
         const gridSize = 50;
         const table = document.getElementById('wordSearchTable');
@@ -367,6 +411,10 @@
                 for (let j = 0; j < gridSize; j++) {
                     const cell = row.insertCell();
                     cell.textContent = getRandomLetter();
+
+                    let attr = "cursor";
+                    attr.value = "default";
+                    cell.setAttributeNode(attr);
                 }
             }
         }
