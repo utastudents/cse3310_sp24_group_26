@@ -272,12 +272,12 @@
             console.log("NUM USERS: " + obj.length)
 
             if('request' in obj){   // Is a UserEvent broadcast
-                if(obj.request == 3){   // Is a message sent from someone else
+                if(obj.request == 3){   // Is a chatMessage
                     console.log("Chat message received from broadcast: " + obj.chatMessage + "  From userid: " + obj.UserId);
                     const chatBox = document.getElementById("chatBox");
 
                     const para = document.createElement("p");
-                    const node = document.createTextNode(obj.chatMessage);
+                    const node = document.createTextNode(obj.UserId + ":\n" + obj.chatMessage);
                     para.appendChild(node);
 
                     chatBox.appendChild(para);
@@ -319,15 +319,22 @@
 
         function sendChatMessage(){
             const inputBox = document.getElementById("chatMessage");
-            U = new UserEvent;
-            U.UserId = this.UserId;
-            U.chatMessage = inputBox.value; // Store message sent into UserEvent class
-            U.request = 3;
 
-            connection.send(JSON.stringify(U)); 
-            
-            // Empty message box after "sending"
-            inputBox.value = "";
+            if(inputBox.value == ""){
+                alert("Enter a message: ");
+            }
+            else{
+                U = new UserEvent;
+                U.request = 3;
+                U.GameId = this.GameId;
+                U.UserId = this.UserId;
+                U.chatMessage = inputBox.value; // Store message sent into UserEvent class
+
+                connection.send(JSON.stringify(U)); 
+                
+                // Empty message box after "sending"
+                inputBox.value = "";
+            }
         }
 
         //document.getElementById("startMatchmakingBtn").addEventListener("click", startMatchmaking);
@@ -411,10 +418,6 @@
                 for (let j = 0; j < gridSize; j++) {
                     const cell = row.insertCell();
                     cell.textContent = getRandomLetter();
-
-                    let attr = "cursor";
-                    attr.value = "default";
-                    cell.setAttributeNode(attr);
                 }
             }
         }
