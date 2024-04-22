@@ -56,7 +56,6 @@ public class Game {
         while(((double)validWordsLetters / (length * width)) < density)
         {
             
-           
             String word = words.get(rand.nextInt(words.size())).toUpperCase();
             while(word.length() > maxLength){
                 word = words.get(rand.nextInt(words.size())).toUpperCase();
@@ -123,19 +122,8 @@ public class Game {
             
         }
         System.out.println(" Actual Density: " + (double)validWordsLetters / (length * width));
-        //For every word in the wordbank
-        for(int b = 0; b < wordBank.size(); b++)
-        {
-            /*Algorithm is slow and cannot meet a word density of .67. 
-            Consistent density is around .4 - .5, any higher can cause program 
-            to be stuck*/
-           
-
-                
-            
-        }
         //Fill in rest of the grid with random letters
-        
+        //Print grid
         for(int i = 0;i < width; i++)
         {
             for(int j = 0; j < length; j++)
