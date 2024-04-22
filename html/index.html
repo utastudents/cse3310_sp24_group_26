@@ -241,14 +241,15 @@
     <!-- <script src="usernameValidation.js"></script> -->
 
     <script>
-        let UserId = null;
-
         class UserEvent{
             request;
             GameId;
             UserId;
             chatMessage;
         }
+
+        let currentUser = new UserEvent;
+        currentUser.UserId = this.UserId;
 
 
         serverUrl = "ws://" + window.location.hostname +":"+ (parseInt(location.port) + 100);
@@ -279,6 +280,22 @@
                     const para = document.createElement("p");
                     const node = document.createTextNode(obj.UserId + ":\n" + obj.chatMessage);
                     para.appendChild(node);
+
+                    const rAlign = document.createAttribute("align");
+                    rAlign.value = "right";
+
+                    const lAlign = document.createAttribute("align");
+                    lAlign.value = "left"; 
+
+                    console.log("Current user Id: " + currentUser);
+                    console.log("Object user Id: " + obj.UserId);
+
+                    if(currentUser == obj.UserId){
+                        para.setAttributeNode(rAlign);
+                    }
+                    else{
+                        para.setAttributeNode(lAlign);
+                    }
 
                     chatBox.appendChild(para);
                 }
@@ -319,16 +336,22 @@
 
         function sendChatMessage(){
             const inputBox = document.getElementById("chatMessage");
+            let msg = inputBox.value;
 
-            if(inputBox.value == ""){
+            let limit = 40;
+
+            if(msg == ""){
                 alert("Enter a message: ");
+            }
+            else if(msg.length > limit){
+                alert("Message exceeds " + limit + " character limit. Try again.");
             }
             else{
                 U = new UserEvent;
                 U.request = 3;
                 U.GameId = this.GameId;
                 U.UserId = this.UserId;
-                U.chatMessage = inputBox.value; // Store message sent into UserEvent class
+                U.chatMessage = msg;
 
                 connection.send(JSON.stringify(U)); 
                 
