@@ -1,4 +1,8 @@
 -------------------------------------------------------------------------------
 Test set: com.cse3310.AppTest
 -------------------------------------------------------------------------------
+<<<<<<< HEAD
 Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.073 s - in com.cse3310.AppTest
+=======
+Tests run: 1, Failures: 0, Errors: 0, Skipped: 0, Time elapsed: 0.017 s - in com.cse3310.AppTest
+>>>>>>> e3ba964bf9f9634a89706b83f6b12ab2e615acab
