@@ -74,7 +74,7 @@
             </div>
         </nav>
     </div>
-    <div class="container-fluid custom-body" id="matchmaking">
+    <div class="container-fluid custom-body" id="log-in">
         <div id="home" class="container-fluid text-center flex-column d-flex justify-content-center align-items-center"
             style="height: 100vh;">
             <h1 style="font-size: 5vw;">READY TO SEARCH?</h1>
@@ -83,15 +83,35 @@
             <form name="userForm">
                 <div class="input-group mb-2 ">
                     <span class="input-group-text" id="basic-addon1">@</span>
-                    <input name="fname" type="text" class="form-control" placeholder="EX: JOHNLEE123" aria-label="Username"
+                    <input id="username" name="fname" type="text" class="form-control" placeholder="EX: JOHNLEE123" aria-label="Username"
                         aria-describedby="basic-addon1">
                 </div>
             </form>
-            <a class="btn btn-primary justify-content-center btn-lg active" onclick="startMatchmaking()" role="button" aria-pressed="true">
-                START MATCHMAKING
+            <a class="btn btn-primary justify-content-center btn-lg active" onclick=buttonclicked(1) role="button" aria-pressed="true">
+                JOIN LOBBY
             </a>
             
         </div>
+    </div>
+
+    <div class="d-flex justify-content-center flex-column text-center h-auto pb-5" id="lobby">
+        <h1>LOBBY</h1>
+        
+        <table class="container table table-light h5">
+            <thead>
+                <tr>
+                    <td>USERNAME</td>
+                    <td>READY STATUS</td>
+                </tr>
+            </thead>
+            <tbody id="lobby-body">
+
+            </tbody>
+        </table>
+        <a class="btn btn-primary justify-content-center btn-lg active" onclick=buttonclicked(2)
+                role="button" aria-pressed="true">READY</a>
+        <a class="btn btn-primary justify-content-center btn-lg active" onclick=startMatchmaking()
+                role="button" aria-pressed="true">START GAME</a>
     </div>
 
     <div class="container-fluid custom-body h-auto d-none" id="game">
@@ -219,7 +239,91 @@
 
     <script>AOS.init();</script>
     <!-- <script src="usernameValidation.js"></script> -->
+
     <script>
+        let UserId = null;
+
+        class UserEvent{
+            request;
+            GameId;
+            UserId;
+        }
+
+
+        serverUrl = "ws://" + window.location.hostname +":"+ (parseInt(location.port) + 100);
+        connection = new WebSocket(serverUrl);
+        connection.onopen = function (evt) {
+            console.log("open");
+        }
+
+        connection.onmessage = function(evt){
+
+            let lobby = document.getElementById("lobby-body");
+            lobby.innerHTML = "";
+            var msg;
+            msg = evt.data;
+            let obj = JSON.parse(msg);
+
+            console.log("Message received: " + msg);
+            console.log("NUM USERS: " + obj.length)
+
+            obj.forEach(function(obj){
+                console.log("OBJECT: " + obj)
+                var row = lobby.insertRow();
+                var name = row.insertCell(0);
+                var ready = row.insertCell(1);
+
+                name.textContent = obj.user;
+                if(obj.ready == false){
+                    ready.textContent = "Not Ready";
+                } else{
+                    ready.textContent = "Ready";
+                }
+                
+            });
+        }
+
+        function buttonclicked(value){
+            U = new UserEvent;
+            if(value == 1){
+                let username = document.getElementById("username").value;
+                this.UserId = username;
+                U.UserId = username;
+                U.request = 1;
+                connection.send(JSON.stringify(U));
+                let div = document.getElementById("log-in");
+                div.innerHTML = "";
+            } else if (value == 2){
+                U.UserId = this.UserId;
+                U.request = 2;
+                connection.send(JSON.stringify(U));
+            }
+        }
+
+
+
+
+        //document.getElementById("startMatchmakingBtn").addEventListener("click", startMatchmaking);
+
+        function startMatchmaking() {
+            // Hide matchmaking form
+            document.getElementById("lobby").classList.add("d-none");
+
+            // Show game elements
+            document.getElementById("game").classList.remove("d-none");
+
+            // Update player names
+            document.getElementById("playerOneName").innerText = "@" + UserId.toUpperCase();
+            document.getElementById("playerTwoName").innerText = "@opponent"; // Replace "opponent" with actual opponent's name
+
+            // Start matchmaking process or any other game initialization logic
+        }
+
+    </script>
+
+
+    <script>
+        /*
         document.getElementById("startMatchmakingBtn").addEventListener("click", startMatchmaking);
 
         function startMatchmaking() {
@@ -241,7 +345,9 @@
 
             // Start matchmaking process or any other game initialization logic
         }
+        */
     </script>
+
     <script>
         const wordsToFind = ['apple', 'banana', 'cherry', 'grape', 'orange', 'pear', 'kiwi', 'peach', 'mango','melon' ];
         const gridSize = 50;
