@@ -251,8 +251,8 @@
         let currentUser = new UserEvent;
         currentUser.UserId = this.UserId;
 
-        let connection = null;
-        let serverUrl;
+        var connection = null;
+        var serverUrl;
 
         serverUrl = "ws://" + window.location.hostname +":"+ (parseInt(location.port) + 100);
         connection = new WebSocket(serverUrl);
