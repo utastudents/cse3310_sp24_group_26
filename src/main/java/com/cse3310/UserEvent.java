@@ -5,6 +5,7 @@ public class UserEvent {
     int GameId;
     String UserId;
     String chatMessage;
+    User User;
     // int Button[][];
 
     public UserEvent() {

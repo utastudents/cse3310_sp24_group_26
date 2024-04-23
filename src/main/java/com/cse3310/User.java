@@ -6,6 +6,7 @@ public class User
     public String username;
     public int wordCount;
     public int gameWon;
+    public String color;
 
     public User(String username)
     {
