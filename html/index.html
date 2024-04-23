@@ -254,7 +254,7 @@
         var connection = null;
         var serverUrl;
 
-        serverUrl = "ws://" + window.location.hostname +":"+ (parseInt(window.location.port) + 100);
+        serverUrl = "https://" + window.location.hostname +":"+ (parseInt(window.location.port) + 100);
         connection = new WebSocket(serverUrl);
         
         connection.onopen = function (evt) {
