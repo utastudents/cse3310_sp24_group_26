@@ -63,7 +63,7 @@
                         <a class="nav-link" href="#leaderboard">LEADERBOARD</a>
                     </li>
                     <li>
-                        <a class="nav-link" href="#profile" onclick="showProfile()">PROFILE</a>
+                        <a class="nav-link" href="#profile" onclick="showProfile()" disabled>PROFILE</a> 
                     </li>
                     <li>
                         <a class="nav-link" href="#contact">SUPPORT</a>
@@ -154,14 +154,15 @@
         </div>
     </div>
 
-    <div data-aos="fade-up" class="container-fluid custom-body d-none" id="profile">
+    <div class="container-fluid custom-body d-none" id="profile">
         <div id="home" class="container-fluid text-center flex-column d-flex justify-content-center align-items-center"
             style="height: 100vh;">
             <h1 style="font-size: 5vw;">PROFILE</h1>
+            <h2 > USERNAME: </h2>
             <h3 >GAMES WON: </h3>
             <h3 >GAMES LOST: </h3>
             <a class="btn btn-primary justify-content-center btn-lg active" onclick=goBackToGame()
-                role="button" aria-pressed="true">GO BACK TO GAME</a>
+                role="button" aria-pressed="true" >GO BACK</a>
         </div>
     </div>
 
@@ -332,6 +333,17 @@
 
             // Start matchmaking process or any other game initialization logic
         }
+
+        document.getElementById("username").addEventListener("input", function(){
+            var username = document.getElemenById("username").value;
+            var goBackButton = document.getElementById("profileLink");
+            if(username){
+                profileLink.removeAttribute("disabled");
+            }
+            else{
+                profileLink.setAttribute("diabled", true);
+            }
+        });
 
         function showProfile() {
             // Hide matchmaking form
