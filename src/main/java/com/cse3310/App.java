@@ -42,6 +42,30 @@ public class App extends WebSocketServer {
 
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
+
+        String filename = "words.txt";
+        //Read in file of words
+        ArrayList<String> wordList = new ArrayList<>();
+        try(BufferedReader br = new BufferedReader(new FileReader(filename)))
+        {
+            String line;
+            while((line = br.readLine()) != null)
+            {
+                wordList.add(line.trim());
+            }
+
+        }
+        catch (IOException e)
+        {
+            System.err.println("Error reading file:"+ e.getMessage());
+        }
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.create();
+        Game g = new Game(wordList);
+        String jsonString = gson.toJson(g);
+        System.out.println(jsonString);
+        broadcast(jsonString);
+       
         System.out.println(conn.getRemoteSocketAddress().getAddress().getHostAddress() + " connected");
     }
 
@@ -126,17 +150,7 @@ public class App extends WebSocketServer {
     }
 
     public static void main(String[] args) {
-        String filename = "words.txt";
-        // Read in file of words
-        ArrayList<String> wordList = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                wordList.add(line.trim());
-            }
-        } catch (IOException e) {
-            System.err.println("Error reading file:" + e.getMessage());
-        }
+        
         // Set up the http server
         try {
             String envPort = System.getenv("HTTP_PORT");
@@ -163,5 +177,6 @@ public class App extends WebSocketServer {
             e.printStackTrace();
         }
 
+        
     }
 }
