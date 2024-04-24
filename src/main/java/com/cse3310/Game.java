@@ -50,7 +50,6 @@ public class Game {
         int[][] directions = {{1,1} , {-1,1} , {0,1} ,{-1,0}, {1,0}};
         double density = .67; // density of grid
         int maxLength = 10;
-        int areaFactor = 1;
         //Input words into the array
         //Take random words from the word list to put inside a word bank
         int index = 0;
