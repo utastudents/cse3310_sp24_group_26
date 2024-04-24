@@ -67,13 +67,9 @@ public class App extends WebSocketServer {
             User userRequest = new User(U.UserId);
 
             // Choosing random user color
-            int index = (int) (Math.random() * colors.size());
-            String color = colors.get(index);
-            colors.remove(index);
-            userRequest.color = color;
+            userRequest.color = U.color;
 
-            System.out.println("User color is " + color);
-        
+            System.out.println("User color is " + U.color);
 
             ActiveUsers.add(userRequest);
             for (User x : ActiveUsers) {
@@ -104,6 +100,10 @@ public class App extends WebSocketServer {
             // - chatMessage
             String jsonString = gson.toJson(U);
             System.out.println("User has sent message: " + jsonString);
+            broadcast(jsonString);
+        } else if (U.request == 4) { // User has pressed a letter. Update button data.
+            String jsonString = gson.toJson(U);
+            System.out.println("User has pressed a letter: " + jsonString);
             broadcast(jsonString);
         }
 
@@ -171,8 +171,8 @@ public class App extends WebSocketServer {
 
             App A = new App(socketPort);
             A.start();
-            
-            String[] c = {"Red", "Green", "Blue", "Yellow", "Purple"};
+
+            String[] c = { "Red", "Green", "Blue", "Yellow", "Purple" };
 
             A.colors.addAll(Arrays.asList(c));
 
