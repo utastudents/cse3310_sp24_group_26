@@ -4,5 +4,4 @@ public class UserEvent {
     int request;
     int GameId;
     String UserId;
-    //int Button[][];
 }

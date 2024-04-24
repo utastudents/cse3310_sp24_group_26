@@ -43,6 +43,30 @@ public class App extends WebSocketServer
 
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
+
+        String filename = "words.txt";
+        //Read in file of words
+        ArrayList<String> wordList = new ArrayList<>();
+        try(BufferedReader br = new BufferedReader(new FileReader(filename)))
+        {
+            String line;
+            while((line = br.readLine()) != null)
+            {
+                wordList.add(line.trim());
+            }
+
+        }
+        catch (IOException e)
+        {
+            System.err.println("Error reading file:"+ e.getMessage());
+        }
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.create();
+        Game g = new Game(wordList);
+        String jsonString = gson.toJson(g);
+        System.out.println(jsonString);
+        broadcast(jsonString);
+       
         System.out.println(conn.getRemoteSocketAddress().getAddress().getHostAddress() + " connected");
     }
 
@@ -61,7 +85,7 @@ public class App extends WebSocketServer
         Gson gson = builder.create();
         UserEvent U = gson.fromJson(message, UserEvent.class);
         System.out.println(U.UserId + " sent request " + U.request);
-
+        
         if(U.request == 1){
             User userRequest = new User(U.UserId);
             ActiveUsers.add(userRequest);
@@ -83,6 +107,7 @@ public class App extends WebSocketServer
             String jsonString = gson.toJson(LobbyUsers);
             broadcast(jsonString);
         }
+        
 
         /* 
         // Get our Game Object
@@ -116,25 +141,7 @@ public class App extends WebSocketServer
     }
 
     public static void main(String[] args) {
-        String filename = "words.txt";
-        //Read in file of words
-        ArrayList<String> wordList = new ArrayList<>();
         
-    
-        try(BufferedReader br = new BufferedReader(new FileReader(filename)))
-        {
-            String line;
-            while((line = br.readLine()) != null)
-            {
-                wordList.add(line.trim());
-            }
-        }
-        catch (IOException e)
-        {
-            System.err.println("Error reading file:"+ e.getMessage());
-        }
-        Game G = new Game(wordList);
-        /*
         // Set up the http server
         try{
             String envPort = System.getenv("HTTP_PORT");
@@ -167,7 +174,7 @@ public class App extends WebSocketServer
         catch (NullPointerException e){ // Checks for environment variable
             e.printStackTrace();
         }
-        */
+
         
 
     }

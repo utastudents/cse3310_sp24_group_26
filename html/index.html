@@ -264,8 +264,12 @@
             msg = evt.data;
             let obj = JSON.parse(msg);
 
+            if('grid' in obj){
+                console.log(obj.grid);
+            }
+
             console.log("Message received: " + msg);
-            console.log("NUM USERS: " + obj.length)
+            console.log("NUM USERS: " + obj.length);
 
             obj.forEach(function(obj){
                 console.log("OBJECT: " + obj)

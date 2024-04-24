@@ -5,15 +5,17 @@ import java.util.Random;
 import java.util.Collections;
 
 public class Game {
-    private ArrayList<User> users;
+    //public ArrayList<User> users;
     public int GameId;
     public char[][] grid;
     public ArrayList<String> wordBank;
-    
+
     public Game(ArrayList<String> words)
     {
-        
-        grid = generateGrid(words,wordBank);
+        //users = new ArrayList<User>();
+        wordBank = new ArrayList<String>();
+        this.GameId = 0;
+        this.grid = generateGrid(words,wordBank);
     }
     
     public boolean checkVertical(ArrayList<String> selectedLetters,int startX, int startY, int length){
@@ -49,8 +51,7 @@ public class Game {
         double density = .67; // density of grid
         int maxLength = 10;
         int areaFactor = 1;
-       //Input words into the array
-        wordBank = new ArrayList<String>();
+        //Input words into the array
         //Take random words from the word list to put inside a word bank
         int index = 0;
         while(((double)validWordsLetters / (length * width)) < density)
@@ -132,13 +133,11 @@ public class Game {
                 {
                     
                     grid[i][j] = alphabet.charAt(rand.nextInt(alphabet.length()));
-                    System.out.printf(" |");
                 }
-                else
-                {
+               
                     System.out.printf("" + grid[i][j] + "|");
 
-                }
+                
 
                 
             }
