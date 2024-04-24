@@ -63,7 +63,7 @@
                         <a class="nav-link" href="#leaderboard">LEADERBOARD</a>
                     </li>
                     <li>
-                        <a class="nav-link" href="#profile" onclick="showProfile()" disabled>PROFILE</a> 
+                        <a class="nav-link" href="#profile" onclick="showProfile()" >PROFILE</a> 
                     </li>
                     <li>
                         <a class="nav-link" href="#contact">SUPPORT</a>
@@ -161,8 +161,8 @@
             <h2 > USERNAME: </h2>
             <h3 >GAMES WON: </h3>
             <h3 >GAMES LOST: </h3>
-            <a class="btn btn-primary justify-content-center btn-lg active" onclick=goBackToGame()
-                role="button" aria-pressed="true" >GO BACK</a>
+            <a class="btn btn-primary justify-content-center btn-lg active" onclick="hideProfile()"
+                role="button" aria-pressed="true" >HIDE</a>
         </div>
     </div>
 
@@ -401,50 +401,24 @@
             // Start matchmaking process or any other game initialization logic
         }
 
-        document.getElementById("username").addEventListener("input", function(){
-            var username = document.getElemenById("username").value;
-            var goBackButton = document.getElementById("profileLink");
-            if(username){
-                profileLink.removeAttribute("disabled");
-            }
-            else{
-                profileLink.setAttribute("diabled", true);
-            }
-        });
-
         function showProfile() {
             // Hide matchmaking form
-            document.getElementById("lobby").classList.add("d-none");
+            //document.getElementById("lobby").classList.add("d-none");
 
             // Hide game elements
-            document.getElementById("game").classList.add("d-none");
+            //document.getElementById("game").classList.add("d-none");
 
             
             // Show profile elements
             document.getElementById("profile").classList.remove("d-none");
 
-            // Update player names
-            // document.getElementById("playerOneName").innerText = "@" + UserId.toUpperCase();
-            document.getElementById("playerTwoName").innerText = "@opponent"; // Replace "opponent" with actual opponent's name
+            
 
-            // Start matchmaking process or any other game initialization logic
         }
 
-        function goBackToGame() {
-            // Hide matchmaking form
-            document.getElementById("lobby").classList.add("d-none");
-
+        function hideProfile() {
             // Hide profile elements
             document.getElementById("profile").classList.add("d-none");
-
-            // Show game elements
-            document.getElementById("game").classList.remove("d-none");
-
-            // Update player names
-            // document.getElementById("playerOneName").innerText = "@" + UserId.toUpperCase();
-            document.getElementById("playerTwoName").innerText = "@opponent"; // Replace "opponent" with actual opponent's name
-
-            // Start matchmaking process or any other game initialization logic
         }
 
     </script>
