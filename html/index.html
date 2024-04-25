@@ -78,8 +78,8 @@
         <div id="home" class="container-fluid text-center flex-column d-flex justify-content-center align-items-center"
             style="height: 100vh;">
             <h1 style="font-size: 5vw;">READY TO SEARCH?</h1>
-            <h3>THERE ARE #_ PLAYERS IN THE LOBBY</h3>
-            <h4>ENTER YOUR USERNAME TO START</h4>
+            <h3 ID="readyHeader">THERE ARE # PLAYERS IN THE LOBBY</h3>
+            <h4 >ENTER YOUR USERNAME TO START</h4>
             <form name="userForm">
                 <div class="input-group mb-2 ">
                     <span class="input-group-text" id="basic-addon1">@</span>
@@ -272,7 +272,10 @@
             let obj = JSON.parse(msg);
 
             console.log("Message received: " + msg);
-            console.log("NUM USERS: " + obj.length);
+
+            if('error' in obj){
+                alert(obj.user + " tried to start the match \n" + "Not enough players ready in the lobby");
+            }
 
             if('grid' in obj){ // Grid sent from server
 
@@ -323,23 +326,28 @@
                 }
             }
 
+            if(obj.constructor == Array){
+                lobby.innerHTML = "";
 
-            lobby.innerHTML = "";
+                obj.forEach(function(obj)
+                {
+                    console.log("OBJECT: " + obj)
+                    var row = lobby.insertRow();
+                    var name = row.insertCell(0);
+                    var ready = row.insertCell(1);
 
-            obj.forEach(function(obj){
-                console.log("OBJECT: " + obj)
-                var row = lobby.insertRow();
-                var name = row.insertCell(0);
-                var ready = row.insertCell(1);
+                    name.textContent = obj.user;
+                    if(obj.ready == false){
+                        ready.textContent = "Not Ready";
+                    } else{
+                        ready.textContent = "Ready";
+                    }
+                });
 
-                name.textContent = obj.user;
-                if(obj.ready == false){
-                    ready.textContent = "Not Ready";
-                } else{
-                    ready.textContent = "Ready";
-                }
-                
-            });
+                const readyHeader = document.getElementById("readyHeader");
+                readyHeader.textContent = `THERE ARE ${obj.length} PLAYERS IN THE LOBBY`;
+                console.log("NUM USERS: " + obj.length);
+            }
         }
 
         function buttonclicked(value){
@@ -402,16 +410,6 @@
             U.request = 5;
             connection.send(JSON.stringify(U));
             console.log("Player started the match: " + JSON.stringify(U));
-
-            // Hide matchmaking form
-            document.getElementById("lobby").classList.add("d-none");
-
-            // Show game elements
-            document.getElementById("game").classList.remove("d-none");
-
-            // Update player names
-            document.getElementById("playerOneName").innerText = "@" + UserId.toUpperCase();
-            document.getElementById("playerTwoName").innerText = "@opponent"; // Replace "opponent" with actual opponent's name
         }
 
     </script>
