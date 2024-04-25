@@ -1,6 +1,6 @@
-com/cse3310/ServerEvent.class
 com/cse3310/Coordinate.class
 com/cse3310/Locations.class
+com/cse3310/ServerEvent.class
 com/cse3310/HttpServer.class
 com/cse3310/HttpServer$1.class
 com/cse3310/Lobby.class
