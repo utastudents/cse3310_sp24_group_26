@@ -45,12 +45,56 @@ public class App extends WebSocketServer {
 
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
+
+        String filename = "words.txt";
+        //Read in file of words
+        ArrayList<String> wordList = new ArrayList<>();
+        try(BufferedReader br = new BufferedReader(new FileReader(filename)))
+        {
+            String line;
+            while((line = br.readLine()) != null)
+            {
+                wordList.add(line.trim());
+            }
+
+        }
+        catch (IOException e)
+        {
+            System.err.println("Error reading file:"+ e.getMessage());
+        }
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.create();
+        Game g = new Game(wordList);
+        String jsonString = gson.toJson(g);
+        System.out.println(jsonString);
+        broadcast(jsonString);
+       
         System.out.println(conn.getRemoteSocketAddress().getAddress().getHostAddress() + " connected");
     }
 
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-        // TODO Auto-generated method stub
+        
+        for(int i = 0 ; i < ActiveUsers.size() ; i++){
+            if(ActiveUsers.get(i).conn == conn){
+                System.out.println("removing " + ActiveUsers.get(i).username + " from player and lobby list");
+                String tempName = ActiveUsers.get(i).username;
+
+                for(int j = 0 ; j < LobbyUsers.size() ; j++){
+                    if(LobbyUsers.get(j).user.equals(tempName)){
+                        LobbyUsers.remove(j);
+                    }
+                    
+                }
+                ActiveUsers.remove(i);
+                break;
+            }
+        }
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.create();
+        String jsonString = gson.toJson(LobbyUsers);
+        broadcast(jsonString);
+        
         System.out.println(conn + " has closed");
     }
 
@@ -64,18 +108,17 @@ public class App extends WebSocketServer {
         System.out.println(U.UserId + " sent request " + U.request);
 
         if (U.request == 1) { // New user logged in
-            User userRequest = new User(U.UserId);
-
+            User userRequest = new User(U.UserId, conn);
+          
             // Choosing random user color
             userRequest.color = U.color;
 
             System.out.println("User color is " + U.color);
-
             ActiveUsers.add(userRequest);
             for (User x : ActiveUsers) {
                 System.out.println(x.username);
             }
-
+            
             LobbyUsers.add(new Lobby(userRequest));
 
             String jsonString = gson.toJson(LobbyUsers);
@@ -139,17 +182,7 @@ public class App extends WebSocketServer {
     }
 
     public static void main(String[] args) {
-        String filename = "words.txt";
-        // Read in file of words
-        ArrayList<String> wordList = new ArrayList<>();
-        try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                wordList.add(line.trim());
-            }
-        } catch (IOException e) {
-            System.err.println("Error reading file:" + e.getMessage());
-        }
+        
         // Set up the http server
         try {
             String envPort = System.getenv("HTTP_PORT");
@@ -181,5 +214,6 @@ public class App extends WebSocketServer {
             e.printStackTrace();
         }
 
+        
     }
 }
