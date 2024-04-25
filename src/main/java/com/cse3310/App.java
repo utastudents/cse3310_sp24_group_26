@@ -45,6 +45,11 @@ public class App extends WebSocketServer {
 
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
+
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.create();
+        String jsonString = gson.toJson(LobbyUsers);
+        broadcast(jsonString);
         System.out.println(conn.getRemoteSocketAddress().getAddress().getHostAddress() + " connected");
     }
 
@@ -125,23 +130,44 @@ public class App extends WebSocketServer {
             System.out.println("User has pressed a letter: " + jsonString);
             broadcast(jsonString);
         } else if (U.request == 5) { // Game started. Make the grid.
-            String filename = "words.txt";
-            // Read in file of words
-            ArrayList<String> wordList = new ArrayList<>();
-            try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
-                String line;
-                while ((line = br.readLine()) != null) {
-                    wordList.add(line.trim());
-                }
+            int count = 0;
 
-            } catch (IOException e) {
-                System.err.println("Error reading file:" + e.getMessage());
+            for (Lobby user : LobbyUsers) {
+                if (user.ready == true) {
+                    count++;
+                }
             }
 
-            Game g = new Game(wordList);
-            String jsonString = gson.toJson(g);
-            System.out.println(jsonString);
-            broadcast(jsonString);
+            // Check if ALL lobby users are ready
+            if (count == LobbyUsers.size()) {
+                String filename = "words.txt";
+                // Read in file of words
+                ArrayList<String> wordList = new ArrayList<>();
+                try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        wordList.add(line.trim());
+                    }
+
+                } catch (IOException e) {
+                    System.err.println("Error reading file:" + e.getMessage());
+                }
+
+                Game g = new Game(wordList);
+                String jsonString = gson.toJson(g);
+                System.out.println(jsonString);
+                broadcast(jsonString);
+
+                // Since the game has started, clear the lobbyuser array
+                LobbyUsers.clear();
+            } else {
+                Error err = new Error(U.UserId, "Not enough players ready in the lobby");
+                String jsonString = gson.toJson(err);
+                System.out.println(jsonString);
+
+                broadcast(jsonString);
+            }
+
         }
 
         /*
