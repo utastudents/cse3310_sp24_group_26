@@ -151,6 +151,26 @@ public class App extends WebSocketServer {
 
     public static void main(String[] args) {
         
+        String filename = "words.txt";
+        //Read in file of words
+        ArrayList<String> wordList = new ArrayList<>();
+        try(BufferedReader br = new BufferedReader(new FileReader(filename)))
+        {
+            String line;
+            while((line = br.readLine()) != null)
+            {
+                wordList.add(line.trim());
+            }
+
+        }
+        catch (IOException e)
+        {
+            System.err.println("Error reading file:"+ e.getMessage());
+        }
+
+        Game G = new Game(wordList);
+        
+        /* 
         // Set up the http server
         try {
             String envPort = System.getenv("HTTP_PORT");
@@ -176,7 +196,7 @@ public class App extends WebSocketServer {
         } catch (NullPointerException e) { // Checks for environment variable
             e.printStackTrace();
         }
-
+        */
         
     }
 }

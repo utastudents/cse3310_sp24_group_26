@@ -35,21 +35,19 @@ public class Game {
         Random rand = new Random();
         int length = 20;
         int width = 20;
-        int areaPortion = 5;
         char[][] grid = new char[width][length];
         String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         String insertWord; 
         int orientation; //Integer to determine what direction the word will be printed
-        int startY;
-        int startX;
-        int dX;
-        int dY;
+        int startY, startX, dX, dY;
         int tries;
         boolean fits;
         int validWordsLetters = 0; // For calculating word density
         int[][] directions = {{1,1} , {-1,1} , {0,1} ,{-1,0}, {1,0}};
         double density = .67; // density of grid
         int maxLength = 10;
+        float diagUp,diagDown,horizontals,vertUp,vertDown; // stats to see orientations
+        diagUp = diagDown = horizontals = vertUp = vertDown = 0;
         //Input words into the array
         //Take random words from the word list to put inside a word bank
         int index = 0;
@@ -69,7 +67,7 @@ public class Game {
                 fits = true;
                 startX = rand.nextInt(length);
                 startY = rand.nextInt(width);
-                orientation = rand.nextInt(4);
+                orientation = rand.nextInt(5);
                 dX = directions[orientation][1];
                 dY = directions[orientation][0];
                 int secondCheck = 0;
@@ -113,6 +111,21 @@ public class Game {
                     int y = startY + (c * dY);
                     //System.out.println("Putting letter " + insertWord.charAt(c) + " of word " + insertWord + " at index " + y + " " + x);
                 }
+                switch(orientation)
+                {
+                    case 0: diagUp++; 
+                    break;
+                    case 1: diagDown++;
+                    break;
+                    case 2: horizontals++;
+                    break;
+                    case 3: vertDown++;
+                    break;
+                    case 4: vertUp++;
+                    break;
+                    default: System.out.println("Error");
+                    break;
+                }
                 System.out.println(index + "." + wordBank.get(index));
                 validWordsLetters = validWordsLetters + wordBank.get(index).length();
                 index++;
@@ -121,7 +134,13 @@ public class Game {
             
             
         }
-        System.out.println(" Actual Density: " + (double)validWordsLetters / (length * width));
+        System.out.println("Index: " +  index);
+        System.out.println("Actual Density: " + (double)validWordsLetters / (length * width));
+        System.out.println("Upward Diagonals: " + (diagUp/index));
+        System.out.println("Downward Diagonals: " + (diagDown/index));
+        System.out.println("Horizontals: " +  (horizontals/index));
+        System.out.println("Downward verticals: " + (vertDown/index));
+        System.out.println("Upward verticals:" + (vertUp/index));
         //Fill in rest of the grid with random letters
         //Print grid
         for(int i = 0;i < width; i++)
@@ -132,13 +151,14 @@ public class Game {
                 {
                     
                     grid[i][j] = alphabet.charAt(rand.nextInt(alphabet.length()));
+                    System.out.printf(" |");
+
                 }
-               
+                else
+                {
                     System.out.printf("" + grid[i][j] + "|");
-
-                
-
-                
+                }
+  
             }
             System.out.println();
         }
