@@ -78,8 +78,8 @@
         <div id="home" class="container-fluid text-center flex-column d-flex justify-content-center align-items-center"
             style="height: 100vh;">
             <h1 style="font-size: 5vw;">READY TO SEARCH?</h1>
-            <h3 >THERE ARE #_ PLAYERS IN THE LOBBY</h3>
-            <h4 >ENTER YOUR USERNAME TO START</h4>
+            <h3>THERE ARE #_ PLAYERS IN THE LOBBY</h3>
+            <h4>ENTER YOUR USERNAME TO START</h4>
             <form name="userForm">
                 <div class="input-group mb-2 ">
                     <span class="input-group-text" id="basic-addon1">@</span>
@@ -271,10 +271,6 @@
             
             let obj = JSON.parse(msg);
 
-            if('grid' in obj){
-                console.log(obj.grid);
-            }
-
             console.log("Message received: " + msg);
             console.log("NUM USERS: " + obj.length);
 
@@ -282,6 +278,17 @@
 
                 // Generate and display the word search
                 generateWordSearch(obj.grid);
+                console.log(obj.grid);
+
+                // Hide matchmaking form
+                document.getElementById("lobby").classList.add("d-none");
+
+                // Show game elements
+                document.getElementById("game").classList.remove("d-none");
+
+                // Update player names
+                document.getElementById("playerOneName").innerText = "@" + UserId.toUpperCase();
+                document.getElementById("playerTwoName").innerText = "@opponent"; // Replace "opponent" with actual opponent's name
             }
 
             if('request' in obj){   // USER EVENTS
@@ -303,7 +310,7 @@
                     chatBox.appendChild(para);
                 }
 
-                if(obj.request == 4){   // Request # 4: Button pressed.
+                if(obj.request == 4){   // Request # 4: Letter pressed.
                     console.log("Letter pressed by " + obj.UserId + ": " + obj.buttonId + ". Button color is " + obj.color);
                     const button = document.getElementById(obj.buttonId);
 
@@ -389,6 +396,13 @@
         //document.getElementById("startMatchmakingBtn").addEventListener("click", startMatchmaking);
 
         function startMatchmaking() {
+            // User has started the game. Move everyone to the game screen and send a broadcast to load the grid for everyone;
+            U = new UserEvent;
+            U.UserId = this.UserId;
+            U.request = 5;
+            connection.send(JSON.stringify(U));
+            console.log("Player started the match: " + JSON.stringify(U));
+
             // Hide matchmaking form
             document.getElementById("lobby").classList.add("d-none");
 
@@ -398,8 +412,6 @@
             // Update player names
             document.getElementById("playerOneName").innerText = "@" + UserId.toUpperCase();
             document.getElementById("playerTwoName").innerText = "@opponent"; // Replace "opponent" with actual opponent's name
-
-            // Start matchmaking process or any other game initialization logic
         }
 
     </script>
@@ -453,7 +465,7 @@
 
                 for (let j = 0; j < gridSize; j++) {
                     const button = document.createElement("button");
-                    button.textContent = letters[Math.floor(Math.random() * letters.length)];
+                    button.textContent = grid[i][j];
 
                     button.setAttribute("id", `${n}`);
                     button.setAttribute("onclick", "processLetter(this)");
@@ -465,8 +477,6 @@
 
             }
         }
-
-        generateWordSearch(); // For testing. Will remove when grid is broadcasted.
     </script>
 </body>
 
