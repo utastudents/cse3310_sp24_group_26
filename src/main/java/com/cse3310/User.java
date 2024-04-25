@@ -7,6 +7,7 @@ public class User
     public String username;
     public int wordCount;
     public int gameWon;
+    public String color;
     public WebSocket conn;
 
     public User(String username, WebSocket conn)

@@ -245,10 +245,11 @@
             GameId;
             UserId;
             chatMessage;
+            buttonId;
+            color;
         }
 
-        let currentUser = new UserEvent;
-        currentUser.UserId = this.UserId;
+        var colors = ["Red", "Green", "Blue", "Yellow", "Purple"];
 
         var connection = null;
         var serverUrl;
@@ -283,8 +284,8 @@
                 generateWordSearch(obj.grid);
             }
 
-            if('request' in obj){   // Is a UserEvent broadcast
-                if(obj.request == 3){   // Is a chatMessage
+            if('request' in obj){   // USER EVENTS
+                if(obj.request == 3){   // Since request # is 3, a chatMessage is being sent from a client
                     console.log("Chat message received from broadcast: " + obj.chatMessage + "  From userid: " + obj.UserId);
                     const chatBox = document.getElementById("chatBox");
 
@@ -292,25 +293,29 @@
                     const node = document.createTextNode(obj.UserId + ":\n" + obj.chatMessage);
                     para.appendChild(node);
 
-                    const rAlign = document.createAttribute("align");
-                    rAlign.value = "right";
-
-                    const lAlign = document.createAttribute("align");
-                    lAlign.value = "left"; 
-
-                    console.log("Current user Id: " + currentUser);
-                    console.log("Object user Id: " + obj.UserId);
-
-                    if(currentUser == obj.UserId){
-                        para.setAttributeNode(rAlign);
+                    if(obj.UserId = U.userId){
+                        para.setAttribute("align", "right");
                     }
                     else{
-                        para.setAttributeNode(lAlign);
+                        para.setAttribute("align", "left");
                     }
 
                     chatBox.appendChild(para);
                 }
+
+                if(obj.request == 4){   // Request # 4: Button pressed.
+                    console.log("Letter pressed by " + obj.UserId + ": " + obj.buttonId + ". Button color is " + obj.color);
+                    const button = document.getElementById(obj.buttonId);
+
+                    if(button.style.background === obj.color.toLowerCase()){ // Button previously pressed
+                        button.style.background = "white";
+                    }
+                    else{
+                        button.style.background = obj.color.toLowerCase();
+                    }
+                }
             }
+
 
             lobby.innerHTML = "";
 
@@ -337,6 +342,14 @@
                 this.UserId = username;
                 U.UserId = username;
                 U.request = 1;
+
+                let index = (Math.floor(Math.random() * colors.length));
+                let color = colors[index];
+                colors.splice(index, 1);
+
+                U.color = color;
+                this.color = color;
+
                 connection.send(JSON.stringify(U));
                 let div = document.getElementById("log-in");
                 div.classList.add("d-none");
@@ -399,12 +412,26 @@
             }
         }
         
-        function getLetterLocation(button){
-            let id = button.id;
+
+        function processLetter(button){
+            let id = button.getAttribute("id");
             let row = Math.floor(id / 10);
             let col = id % 10;
         
             let location = new Coordinate(row, col);
+
+            U = new UserEvent;
+            U.request = 4;
+            U.GameId = this.GameId;
+            U.UserId = this.UserId;
+            U.color = this.color;
+            U.buttonId = id;
+
+            console.log("this.color is : " + U.color);
+
+            console.log("User pressed button. " + JSON.stringify(U) + " sent to server");
+
+            connection.send(JSON.stringify(U));
         }
     </script>
 
@@ -427,9 +454,8 @@
                     const button = document.createElement("button");
                     button.textContent = letters[Math.floor(Math.random() * letters.length)];
 
-                    const buttonAttr = document.createAttribute("id");
-                    buttonAttr.value = `${n}`;
-                    button.setAttributeNode(buttonAttr);
+                    button.setAttribute("id", `${n}`);
+                    button.setAttribute("onclick", "processLetter(this)");
 
                     div.appendChild(button);
 
