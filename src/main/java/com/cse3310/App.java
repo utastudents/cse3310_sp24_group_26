@@ -139,7 +139,7 @@ public class App extends WebSocketServer {
             }
 
             // Check if ALL lobby users are ready
-            if (count == LobbyUsers.size()) {
+            if (count == LobbyUsers.size() && LobbyUsers.size() > 1) {
                 String filename = "words.txt";
                 // Read in file of words
                 ArrayList<String> wordList = new ArrayList<>();

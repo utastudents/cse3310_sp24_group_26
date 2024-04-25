@@ -94,7 +94,7 @@
         </div>
     </div>
 
-    <div class="d-flex justify-content-center flex-column text-center h-auto pb-5" id="lobby">
+    <div class="d-flex justify-content-center flex-column text-center h-auto pb-5 d-none" id="lobby">
         <h1>LOBBY</h1>
         
         <table class="container table table-light h5">
@@ -366,8 +366,12 @@
                 this.color = color;
 
                 connection.send(JSON.stringify(U));
-                let div = document.getElementById("log-in");
-                div.classList.add("d-none");
+
+                const logIn = document.getElementById("log-in");
+                logIn.classList.add("d-none");
+
+                const lobby = document.getElementById("lobby");
+                lobby.classList.remove("d-none");
             } else if (value == 2){
                 U.UserId = this.UserId;
                 U.request = 2;
