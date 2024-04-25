@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" name="com.cse3310.AppTest" time="0.07" tests="1" errors="0" skipped="0" failures="0">
+<testsuite xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="https://maven.apache.org/surefire/maven-surefire-plugin/xsd/surefire-test-report.xsd" name="com.cse3310.AppTest" time="0.088" tests="1" errors="0" skipped="0" failures="0">
   <properties>
     <property name="awt.toolkit" value="sun.awt.X11.XToolkit"/>
     <property name="exec.mainClass" value="com.cse3310.App"/>
     <property name="java.specification.version" value="11"/>
     <property name="sun.cpu.isalist" value=""/>
     <property name="sun.jnu.encoding" value="UTF-8"/>
-    <property name="java.class.path" value="/mnt/c/Users/verid/OneDrive/Documents/School/Classes/CSE 3310 Software Engineering/cse3310_sp24_group_26/target/test-classes:/mnt/c/Users/verid/OneDrive/Documents/School/Classes/CSE 3310 Software Engineering/cse3310_sp24_group_26/target/classes:/home/veridion/.m2/repository/junit/junit/4.13.1/junit-4.13.1.jar:/home/veridion/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/veridion/.m2/repository/com/google/code/gson/gson/2.9.1/gson-2.9.1.jar:/home/veridion/.m2/repository/net/freeutils/jlhttp/2.6/jlhttp-2.6.jar:/home/veridion/.m2/repository/org/java-websocket/Java-WebSocket/1.5.4/Java-WebSocket-1.5.4.jar:/home/veridion/.m2/repository/org/slf4j/slf4j-api/2.0.6/slf4j-api-2.0.6.jar:"/>
+    <property name="java.class.path" value="/mnt/c/Users/verid/OneDrive/Documents/School/Classes/CSE 3310 Software Engineering/cse3310_sp24_group_26/target/test-classes:/mnt/c/Users/verid/OneDrive/Documents/School/Classes/CSE 3310 Software Engineering/cse3310_sp24_group_26/target/classes:/home/veridion/.m2/repository/junit/junit/4.13.1/junit-4.13.1.jar:/home/veridion/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/veridion/.m2/repository/com/google/code/gson/gson/2.9.1/gson-2.9.1.jar:/home/veridion/.m2/repository/net/freeutils/jlhttp/2.6/jlhttp-2.6.jar:/home/veridion/.m2/repository/org/java-websocket/Java-WebSocket/1.5.4/Java-WebSocket-1.5.4.jar:/home/veridion/.m2/repository/org/slf4j/slf4j-api/2.0.0-alpha0/slf4j-api-2.0.0-alpha0.jar:"/>
     <property name="java.vm.vendor" value="Ubuntu"/>
     <property name="sun.arch.data.model" value="64"/>
     <property name="java.vendor.url" value="https://ubuntu.com/"/>
@@ -15,9 +15,9 @@
     <property name="os.name" value="Linux"/>
     <property name="sun.java.launcher" value="SUN_STANDARD"/>
     <property name="sun.boot.library.path" value="/usr/lib/jvm/java-11-openjdk-amd64/lib"/>
-    <property name="sun.java.command" value="/mnt/c/Users/verid/OneDrive/Documents/School/Classes/CSE 3310 Software Engineering/cse3310_sp24_group_26/target/surefire/surefirebooter16432020211796163521.jar /mnt/c/Users/verid/OneDrive/Documents/School/Classes/CSE 3310 Software Engineering/cse3310_sp24_group_26/target/surefire 2024-04-24T02-40-20_862-jvmRun1 surefire8484791409734000747tmp surefire_0766152042770405766tmp"/>
+    <property name="sun.java.command" value="/mnt/c/Users/verid/OneDrive/Documents/School/Classes/CSE 3310 Software Engineering/cse3310_sp24_group_26/target/surefire/surefirebooter15596189239698844243.jar /mnt/c/Users/verid/OneDrive/Documents/School/Classes/CSE 3310 Software Engineering/cse3310_sp24_group_26/target/surefire 2024-04-24T23-27-31_824-jvmRun1 surefire15907097089496663946tmp surefire_013274990516748265449tmp"/>
     <property name="jdk.debug" value="release"/>
-    <property name="surefire.test.class.path" value="/mnt/c/Users/verid/OneDrive/Documents/School/Classes/CSE 3310 Software Engineering/cse3310_sp24_group_26/target/test-classes:/mnt/c/Users/verid/OneDrive/Documents/School/Classes/CSE 3310 Software Engineering/cse3310_sp24_group_26/target/classes:/home/veridion/.m2/repository/junit/junit/4.13.1/junit-4.13.1.jar:/home/veridion/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/veridion/.m2/repository/com/google/code/gson/gson/2.9.1/gson-2.9.1.jar:/home/veridion/.m2/repository/net/freeutils/jlhttp/2.6/jlhttp-2.6.jar:/home/veridion/.m2/repository/org/java-websocket/Java-WebSocket/1.5.4/Java-WebSocket-1.5.4.jar:/home/veridion/.m2/repository/org/slf4j/slf4j-api/2.0.6/slf4j-api-2.0.6.jar:"/>
+    <property name="surefire.test.class.path" value="/mnt/c/Users/verid/OneDrive/Documents/School/Classes/CSE 3310 Software Engineering/cse3310_sp24_group_26/target/test-classes:/mnt/c/Users/verid/OneDrive/Documents/School/Classes/CSE 3310 Software Engineering/cse3310_sp24_group_26/target/classes:/home/veridion/.m2/repository/junit/junit/4.13.1/junit-4.13.1.jar:/home/veridion/.m2/repository/org/hamcrest/hamcrest-core/1.3/hamcrest-core-1.3.jar:/home/veridion/.m2/repository/com/google/code/gson/gson/2.9.1/gson-2.9.1.jar:/home/veridion/.m2/repository/net/freeutils/jlhttp/2.6/jlhttp-2.6.jar:/home/veridion/.m2/repository/org/java-websocket/Java-WebSocket/1.5.4/Java-WebSocket-1.5.4.jar:/home/veridion/.m2/repository/org/slf4j/slf4j-api/2.0.0-alpha0/slf4j-api-2.0.0-alpha0.jar:"/>
     <property name="sun.cpu.endian" value="little"/>
     <property name="user.home" value="/home/veridion"/>
     <property name="user.language" value="en"/>
@@ -31,7 +31,7 @@
     <property name="java.specification.name" value="Java Platform API Specification"/>
     <property name="java.vm.specification.vendor" value="Oracle Corporation"/>
     <property name="java.awt.graphicsenv" value="sun.awt.X11GraphicsEnvironment"/>
-    <property name="surefire.real.class.path" value="/mnt/c/Users/verid/OneDrive/Documents/School/Classes/CSE 3310 Software Engineering/cse3310_sp24_group_26/target/surefire/surefirebooter16432020211796163521.jar"/>
+    <property name="surefire.real.class.path" value="/mnt/c/Users/verid/OneDrive/Documents/School/Classes/CSE 3310 Software Engineering/cse3310_sp24_group_26/target/surefire/surefirebooter15596189239698844243.jar"/>
     <property name="sun.management.compiler" value="HotSpot 64-Bit Tiered Compilers"/>
     <property name="java.runtime.version" value="11.0.21+9-post-Ubuntu-0ubuntu122.04"/>
     <property name="user.name" value="veridion"/>
