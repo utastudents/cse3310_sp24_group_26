@@ -71,7 +71,27 @@ public class App extends WebSocketServer {
 
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-        // TODO Auto-generated method stub
+        
+        for(int i = 0 ; i < ActiveUsers.size() ; i++){
+            if(ActiveUsers.get(i).conn == conn){
+                System.out.println("removing " + ActiveUsers.get(i).username + " from player and lobby list");
+                String tempName = ActiveUsers.get(i).username;
+
+                for(int j = 0 ; j < LobbyUsers.size() ; j++){
+                    if(LobbyUsers.get(j).user.equals(tempName)){
+                        LobbyUsers.remove(j);
+                    }
+                    
+                }
+                ActiveUsers.remove(i);
+                break;
+            }
+        }
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.create();
+        String jsonString = gson.toJson(LobbyUsers);
+        broadcast(jsonString);
+        
         System.out.println(conn + " has closed");
     }
 
@@ -85,12 +105,12 @@ public class App extends WebSocketServer {
         System.out.println(U.UserId + " sent request " + U.request);
 
         if (U.request == 1) { // New user logged in
-            User userRequest = new User(U.UserId);
+            User userRequest = new User(U.UserId, conn);
             ActiveUsers.add(userRequest);
             for (User x : ActiveUsers) {
                 System.out.println(x.username);
             }
-
+            
             LobbyUsers.add(new Lobby(userRequest));
 
             String jsonString = gson.toJson(LobbyUsers);
