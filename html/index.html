@@ -279,7 +279,6 @@
             console.log("NUM USERS: " + obj.length);
 
             if('grid' in obj){ // Grid sent from server
-
                 // Generate and display the word search
                 generateWordSearch(obj.grid);
             }
@@ -303,7 +302,7 @@
                     chatBox.appendChild(para);
                 }
 
-                if(obj.request == 4){   // Request # 4: Button pressed.
+                if(obj.request == 4){   // Request # 4: Letter pressed.
                     console.log("Letter pressed by " + obj.UserId + ": " + obj.buttonId + ". Button color is " + obj.color);
                     const button = document.getElementById(obj.buttonId);
 
@@ -453,7 +452,7 @@
 
                 for (let j = 0; j < gridSize; j++) {
                     const button = document.createElement("button");
-                    button.textContent = letters[Math.floor(Math.random() * letters.length)];
+                    button.textContent = grid[i][j];
 
                     button.setAttribute("id", `${n}`);
                     button.setAttribute("onclick", "processLetter(this)");
@@ -465,8 +464,6 @@
 
             }
         }
-
-        generateWordSearch(); // For testing. Will remove when grid is broadcasted.
     </script>
 </body>
 

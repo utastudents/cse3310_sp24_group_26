@@ -62,6 +62,7 @@ public class App extends WebSocketServer {
         {
             System.err.println("Error reading file:"+ e.getMessage());
         }
+        
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
         Game g = new Game(wordList);
