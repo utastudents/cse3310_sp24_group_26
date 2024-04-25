@@ -39,7 +39,7 @@ public class Game {
         String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         String insertWord; 
         int orientation; //Integer to determine what direction the word will be printed
-        int startY, startX, dX, dY;
+        int startY, startX, dX, dY,finalY,finalX;
         int tries;
         boolean fits;
         int validWordsLetters = 0; // For calculating word density
@@ -51,9 +51,10 @@ public class Game {
         //Input words into the array
         //Take random words from the word list to put inside a word bank
         int index = 0;
+        int overlap = 0;
         while(((double)validWordsLetters / (length * width)) < density)
         {
-            
+            //Grab a word and add it to a word length
             String word = words.get(rand.nextInt(words.size())).toUpperCase();
             while(word.length() > maxLength){
                 word = words.get(rand.nextInt(words.size())).toUpperCase();
@@ -95,6 +96,7 @@ public class Game {
                         }
                     }
                 }
+
             }while(fits == false && tries < 100);
             if(tries >= 100)
             {
@@ -107,34 +109,36 @@ public class Game {
                 for(int c = 0; c < insertWord.length() ; c++)
                 {
                     grid[startY + (c * dY)][startX + (c * dX)] = insertWord.charAt(c);
-                    int x = startX + (c * dX);
-                    int y = startY + (c * dY);
+                    finalX = startX + (c * dX);
+                    finalY = startY + (c * dY);
                     //System.out.println("Putting letter " + insertWord.charAt(c) + " of word " + insertWord + " at index " + y + " " + x);
                 }
-                switch(orientation)
+
+                if(dY == 0)
                 {
-                    case 0: diagUp++; 
-                    break;
-                    case 1: diagDown++;
-                    break;
-                    case 2: horizontals++;
-                    break;
-                    case 3: vertDown++;
-                    break;
-                    case 4: vertUp++;
-                    break;
-                    default: System.out.println("Error");
-                    break;
+                    horizontals++;
+                }
+                else if(dY == 1)
+                {
+                    if(dX == 1)
+                    diagUp++;
+                    else
+                    vertUp++;
+                }
+                else if(dY == -1)
+                {   
+                    if(dX == 1)
+                    diagDown++;
+                    else
+                    vertDown++;
                 }
                 System.out.println(index + "." + wordBank.get(index));
                 validWordsLetters = validWordsLetters + wordBank.get(index).length();
                 index++;
             }
-            
-            
-            
+                
         }
-        System.out.println("Index: " +  index);
+
         System.out.println("Actual Density: " + (double)validWordsLetters / (length * width));
         System.out.println("Upward Diagonals: " + (diagUp/index));
         System.out.println("Downward Diagonals: " + (diagDown/index));
