@@ -263,24 +263,42 @@
 
         // Received a broadcast from a different client
         connection.onmessage = function(evt){
-
-            let lobby = document.getElementById("lobby-body");
-
+            console.log("WHAAATTTTTTT");
             var msg;
             msg = evt.data;
-            
+            console.log("Message received: " + msg);
             let obj = JSON.parse(msg);
+
 
             if('grid' in obj){
                 console.log(obj.grid);
             }
 
-            console.log("Message received: " + msg);
-            console.log("NUM USERS: " + obj.length);
+            
+            if('user' in obj){
+                console.log("UPDATING LOBBY");
+                let lobby = document.getElementById("lobby-body");
+                lobby.innerHTML = "";
+
+                obj.forEach(function(obj){
+                    console.log("OBJECT: " + obj)
+                    var row = lobby.insertRow();
+                    var name = row.insertCell(0);
+                    var ready = row.insertCell(1);
+
+                    name.textContent = obj.user;
+                    if(obj.ready == false){
+                        ready.textContent = "Not Ready";
+                    } else{
+                    ready.textContent = "Ready";
+                    }
+                });
+            }
 
             if('grid' in obj){ // Grid sent from server
-
                 // Generate and display the word search
+                let lobby = document.getElementById("lobby-body");
+                lobby.innerHTML = "";
                 generateWordSearch(obj.grid);
             }
 
@@ -317,22 +335,7 @@
             }
 
 
-            lobby.innerHTML = "";
-
-            obj.forEach(function(obj){
-                console.log("OBJECT: " + obj)
-                var row = lobby.insertRow();
-                var name = row.insertCell(0);
-                var ready = row.insertCell(1);
-
-                name.textContent = obj.user;
-                if(obj.ready == false){
-                    ready.textContent = "Not Ready";
-                } else{
-                    ready.textContent = "Ready";
-                }
-                
-            });
+            
         }
 
         function buttonclicked(value){
@@ -390,6 +393,7 @@
 
         function startMatchmaking() {
             // Hide matchmaking form
+            /*
             document.getElementById("lobby").classList.add("d-none");
 
             // Show game elements
@@ -398,8 +402,11 @@
             // Update player names
             document.getElementById("playerOneName").innerText = "@" + UserId.toUpperCase();
             document.getElementById("playerTwoName").innerText = "@opponent"; // Replace "opponent" with actual opponent's name
-
+            */
             // Start matchmaking process or any other game initialization logic
+            U = new UserEvent;
+            U.request = 5;
+            connection.send(JSON.stringify(U)); 
         }
 
     </script>

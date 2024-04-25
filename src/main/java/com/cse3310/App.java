@@ -28,8 +28,9 @@ public class App extends WebSocketServer {
     Vector<User> ActiveUsers = new Vector<User>();
     Vector<Lobby> LobbyUsers = new Vector<Lobby>();
     ArrayList<String> colors = new ArrayList<String>();
+    int numReady = 0;
 
-    int GameID;
+    int GameId = 0;
 
     public App(int port) {
         super(new InetSocketAddress(port));
@@ -45,7 +46,7 @@ public class App extends WebSocketServer {
 
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
-
+/* 
         String filename = "words.txt";
         //Read in file of words
         ArrayList<String> wordList = new ArrayList<>();
@@ -68,7 +69,7 @@ public class App extends WebSocketServer {
         String jsonString = gson.toJson(g);
         System.out.println(jsonString);
         broadcast(jsonString);
-       
+*/
         System.out.println(conn.getRemoteSocketAddress().getAddress().getHostAddress() + " connected");
     }
 
@@ -96,6 +97,7 @@ public class App extends WebSocketServer {
         broadcast(jsonString);
         
         System.out.println(conn + " has closed");
+        numReady--;
     }
 
     @Override
@@ -113,7 +115,7 @@ public class App extends WebSocketServer {
             // Choosing random user color
             userRequest.color = U.color;
 
-            System.out.println("User color is " + U.color);
+            System.out.println("User color is NOT " + U.color);
             ActiveUsers.add(userRequest);
             for (User x : ActiveUsers) {
                 System.out.println(x.username);
@@ -129,8 +131,14 @@ public class App extends WebSocketServer {
             for (Lobby i : LobbyUsers) {
                 if (i.user.equals(U.UserId)) {
                     i.ready = !i.ready;
+                    if(i.ready == true){
+                        numReady++;
+                    } else{
+                        numReady--;
+                    }
                 }
             }
+            System.out.println("NUMREADY: " + numReady);
             String jsonString = gson.toJson(LobbyUsers);
             broadcast(jsonString);
         } else if (U.request == 3) // User has sent message. Update on everyone's screen;
@@ -148,6 +156,62 @@ public class App extends WebSocketServer {
             String jsonString = gson.toJson(U);
             System.out.println("User has pressed a letter: " + jsonString);
             broadcast(jsonString);
+        } else if (U.request == 5){
+            Vector<User> waitingList = new Vector<>();
+            
+            if(numReady > 1){
+
+                //create the game
+                GameId++;
+                String filename = "words.txt";
+                //Read in file of words
+                ArrayList<String> wordList = new ArrayList<>();
+                try(BufferedReader br = new BufferedReader(new FileReader(filename)))
+                {
+                    String line;
+                    while((line = br.readLine()) != null)
+                    {
+                        wordList.add(line.trim());
+                    }
+
+                }
+                catch (IOException e)
+                {
+                    System.err.println("Error reading file:"+ e.getMessage());
+                }
+                
+                Game g = new Game(wordList, GameId);
+                ActiveGames.add(g);
+
+                //create player list
+                for(Lobby x : LobbyUsers){
+                    if(x.ready == true){
+                        for(User a : ActiveUsers){
+                            if(a.username.equals(x.user)){
+                                waitingList.add(a);
+                            }
+                        }
+                        /* 
+                         * LobbyUsers.remove(i);
+                        ActiveUsers.remove(i);
+                         * 
+                        */
+                        
+                    }
+                    if(waitingList.size() > 4){
+                        break;
+                    }
+                }
+
+                for(User u : waitingList){
+                    System.out.println("Sending grid");
+                    String jsonString = gson.toJson(ActiveGames.get(GameId-1));
+                    u.conn.send(jsonString);
+                }
+
+
+            }
+
         }
 
         /*
