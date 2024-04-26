@@ -63,7 +63,7 @@
                         <a class="nav-link" href="#leaderboard">LEADERBOARD</a>
                     </li>
                     <li>
-                        <a class="nav-link" href="#">PROFILE</a>
+                        <a class="nav-link" href="#profile" onclick="showProfile()"> PROFILE</a>
                     </li>
                     <li>
                         <a class="nav-link" href="#contact">SUPPORT</a>
@@ -197,6 +197,18 @@
         </table>
     </div>
 
+    <div class="container-fluid custom-body d-none" id="profile">
+        <div id="home" class="container-fluid text-center flex-column d-flex justify-content-center align-items-center"
+            style="height: 100vh;">
+            <h1 style="font-size: 5vw;">PROFILE</h1>
+            <h2 id="profile_username"> USERNAME: </h2>
+            <h3 >GAMES WON: </h3>
+            <h3 >GAMES LOST: </h3>
+            <a class="btn btn-primary justify-content-center btn-lg active" onclick="hideProfile()"
+                role="button" aria-pressed="true" >HIDE</a>
+        </div>
+    </div>
+
     </div>
 
     <section data-aos="fade-up" id="contact">
@@ -285,6 +297,12 @@
 
                 // Hide matchmaking form
                 document.getElementById("lobby").classList.add("d-none");
+
+                // Show game elements
+                document.getElementById("game").classList.remove("d-none");
+
+                // Hide profile elements
+                document.getElementById("profile").classList.add("d-none");
 
                 // Show game elements
                 document.getElementById("game").classList.remove("d-none");
@@ -414,6 +432,17 @@
             U.request = 5;
             connection.send(JSON.stringify(U));
             console.log("Player started the match: " + JSON.stringify(U));
+        }
+
+        function showProfile() {
+            // Show profile elements
+            document.getElementById("profile").classList.remove("d-none");
+            document.getElementById("profile_username").innerText = "USERNAME: " + UserId.toUpperCase();
+        }
+
+        function hideProfile() {
+            // Hide profile elements
+            document.getElementById("profile").classList.add("d-none");
         }
 
     </script>
