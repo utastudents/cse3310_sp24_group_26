@@ -81,6 +81,9 @@ public class App extends WebSocketServer {
 
                 for (int j = 0; j < LobbyUsers.size(); j++) {
                     if (LobbyUsers.get(j).user.equals(tempName)) {
+                        if(LobbyUsers.get(j).ready == true){
+                            numReady--;
+                        }
                         LobbyUsers.remove(j);
                     }
 
@@ -95,7 +98,6 @@ public class App extends WebSocketServer {
         broadcast(jsonString);
 
         System.out.println(conn + " has closed");
-        numReady--;
     }
 
     @Override
@@ -108,24 +110,37 @@ public class App extends WebSocketServer {
         System.out.println(U.UserId + " sent request " + U.request);
 
         if (U.request == 1) { // New user logged in
+
+            for(User a : ActiveUsers){
+                if(a.username.equals(U.UserId)){
+                    return;
+                }
+            }
+
             User userRequest = new User(U.UserId, conn);
 
             // Choosing random user color
             userRequest.color = U.color;
 
-            System.out.println("User color is NOT " + U.color);
+            System.out.println("PRINTING LOBBY FROM REQUEST 1 ");
             ActiveUsers.add(userRequest);
             for (User x : ActiveUsers) {
                 System.out.println(x.username);
             }
+            System.out.println();
 
             LobbyUsers.add(new Lobby(userRequest));
             ServerEvent sendBack = new ServerEvent(1, LobbyUsers);
             String jsonString = gson.toJson(sendBack);
-            broadcast(jsonString);
+            //broadcast(jsonString);
+            for(User a : ActiveUsers){
+                a.conn.send(jsonString);
+            }
+
 
         } else if (U.request == 2) // User readying or unreadying. Update on everyone's screen.
         {
+            System.out.println("ENTERED HERE");
             for (Lobby i : LobbyUsers) {
                 if (i.user.equals(U.UserId)) {
                     i.ready = !i.ready;
@@ -136,6 +151,7 @@ public class App extends WebSocketServer {
                     }
                 }
             }
+            System.out.println("NUMREADY: " + numReady);
             ServerEvent sendBack = new ServerEvent(1, LobbyUsers);
             String jsonString = gson.toJson(sendBack);
             broadcast(jsonString);
@@ -156,8 +172,10 @@ public class App extends WebSocketServer {
             broadcast(jsonString);
         } else if (U.request == 5){
             ArrayList<User> waitingList = new ArrayList<>();
-            
+
+            System.out.println("NUM READY: " + numReady);
             if((numReady > 1) && (ActiveGames.size() < 6)){
+                System.out.println("ENTERED HERE");
                 //create player list and remove them from lobby
                 for(int k = 0; k < LobbyUsers.size(); k++){
                     if(LobbyUsers.get(k).ready == true){

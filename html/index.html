@@ -318,13 +318,21 @@
 
             if('request' in obj){   // USER EVENTS
                 if(obj.request == 1){
-                    
-                    let lobby = document.getElementById("lobby-body");
-                    lobby.innerHTML = "";
+
+                    const logIn = document.getElementById("log-in");
+                    logIn.classList.add("d-none");
+
+                    const lobby = document.getElementById("lobby");
+                    lobby.classList.remove("d-none");
+
+
+
+                    let lobbyBody = document.getElementById("lobby-body");
+                    lobbyBody.innerHTML = "";
                     let LobbyUsers = obj.LobbyUsers;
                     LobbyUsers.forEach(function(player){
                         
-                        var row = lobby.insertRow();
+                        var row = lobbyBody.insertRow();
                         var name = row.insertCell(0);
                         var ready = row.insertCell(1);
 
@@ -390,12 +398,14 @@
                 this.color = color;
 
                 connection.send(JSON.stringify(U));
-
+                /*
+                
                 const logIn = document.getElementById("log-in");
                 logIn.classList.add("d-none");
 
                 const lobby = document.getElementById("lobby");
                 lobby.classList.remove("d-none");
+                */
             } else if (value == 2){
                 U.UserId = this.UserId;
                 U.request = 2;
