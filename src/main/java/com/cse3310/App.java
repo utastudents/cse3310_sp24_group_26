@@ -122,8 +122,8 @@ public class App extends WebSocketServer {
             }
             
             LobbyUsers.add(new Lobby(userRequest));
-
-            String jsonString = gson.toJson(LobbyUsers);
+            ServerEvent sendBack = new ServerEvent(1, LobbyUsers);
+            String jsonString = gson.toJson(sendBack);
             broadcast(jsonString);
 
         } else if (U.request == 2) // User readying or unreadying. Update on everyone's screen.
@@ -138,8 +138,8 @@ public class App extends WebSocketServer {
                     }
                 }
             }
-            System.out.println("NUMREADY: " + numReady);
-            String jsonString = gson.toJson(LobbyUsers);
+            ServerEvent sendBack = new ServerEvent(1, LobbyUsers);
+            String jsonString = gson.toJson(sendBack);
             broadcast(jsonString);
         } else if (U.request == 3) // User has sent message. Update on everyone's screen;
         {
@@ -157,14 +157,39 @@ public class App extends WebSocketServer {
             System.out.println("User has pressed a letter: " + jsonString);
             broadcast(jsonString);
         } else if (U.request == 5){
-            Vector<User> waitingList = new Vector<>();
+            ArrayList<User> waitingList = new ArrayList<>();
             
-            if(numReady > 1){
+            if((numReady > 1) && (ActiveGames.size() < 6)){
+                //create player list and remove them from lobby
+                for(int k = 0; k < LobbyUsers.size(); k++){
+                    if(LobbyUsers.get(k).ready == true){
+                        for(User a : ActiveUsers){
+                            if(a.username.equals(LobbyUsers.get(k).user)){
+                                waitingList.add(a);
+                            }
+                        }
+                        
+                        LobbyUsers.remove(k);
+                        k--;
+                        numReady--;
+                    }
+                    if(waitingList.size() > 4){
+                        break;
+                    }
+                }
 
-                //create the game
+                //update lobby for those still there
+                ServerEvent sendBack = new ServerEvent(1, LobbyUsers);
+                String jsonString = gson.toJson(sendBack);
+                broadcast(jsonString);
+
+                System.out.println("PRINTING USERNAMES");
+                for(User x : waitingList){
+                    System.out.println(x.username);
+                }
+
                 GameId++;
                 String filename = "words.txt";
-                //Read in file of words
                 ArrayList<String> wordList = new ArrayList<>();
                 try(BufferedReader br = new BufferedReader(new FileReader(filename)))
                 {
@@ -183,51 +208,13 @@ public class App extends WebSocketServer {
                 Game g = new Game(wordList, GameId);
                 ActiveGames.add(g);
 
-                //create player list
-                for(Lobby x : LobbyUsers){
-                    if(x.ready == true){
-                        for(User a : ActiveUsers){
-                            if(a.username.equals(x.user)){
-                                waitingList.add(a);
-                            }
-                        }
-                        /* 
-                         * LobbyUsers.remove(i);
-                        ActiveUsers.remove(i);
-                         * 
-                        */
-                        
-                    }
-                    if(waitingList.size() > 4){
-                        break;
-                    }
-                }
-
+                //send game to those who are ready 
                 for(User u : waitingList){
-                    System.out.println("Sending grid");
-                    String jsonString = gson.toJson(ActiveGames.get(GameId-1));
+                    jsonString = gson.toJson(ActiveGames.get(GameId-1));
                     u.conn.send(jsonString);
                 }
-
-
             }
-
         }
-
-        /*
-         * // Get our Game Object
-         * Game G = conn.getAttachment();
-         * G.Update(U);
-         * 
-         * // send out the game state every time
-         * // to everyone
-         * String jsonString;
-         * jsonString = gson.toJson(G);
-         * 
-         * System.out.println(jsonString);
-         * broadcast(jsonString);
-         * 
-         */
     }
 
     @Override

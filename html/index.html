@@ -276,33 +276,40 @@
 
             
             if('user' in obj){
-                console.log("UPDATING LOBBY");
-                let lobby = document.getElementById("lobby-body");
-                lobby.innerHTML = "";
-
-                obj.forEach(function(obj){
-                    console.log("OBJECT: " + obj)
-                    var row = lobby.insertRow();
-                    var name = row.insertCell(0);
-                    var ready = row.insertCell(1);
-
-                    name.textContent = obj.user;
-                    if(obj.ready == false){
-                        ready.textContent = "Not Ready";
-                    } else{
-                    ready.textContent = "Ready";
-                    }
-                });
+                
+                
             }
 
             if('grid' in obj){ // Grid sent from server
                 // Generate and display the word search
-                let lobby = document.getElementById("lobby-body");
+                document.getElementById("lobby").classList.add("d-none");
+                let lobby = document.getElementById("lobby");
                 lobby.innerHTML = "";
+                document.getElementById("game").classList.remove("d-none");
                 generateWordSearch(obj.grid);
             }
 
             if('request' in obj){   // USER EVENTS
+                if(obj.request == 1){
+                    
+                    let lobby = document.getElementById("lobby-body");
+                    lobby.innerHTML = "";
+                    let LobbyUsers = obj.LobbyUsers;
+                    LobbyUsers.forEach(function(player){
+                        console.log("OBJECT: " + player)
+                        var row = lobby.insertRow();
+                        var name = row.insertCell(0);
+                        var ready = row.insertCell(1);
+
+                        name.textContent = player.user;
+                        if(player.ready == false){
+                            ready.textContent = "Not Ready";
+                        } else{
+                            ready.textContent = "Ready";
+                        }
+                    });
+                } 
+                
                 if(obj.request == 3){   // Since request # is 3, a chatMessage is being sent from a client
                     console.log("Chat message received from broadcast: " + obj.chatMessage + "  From userid: " + obj.UserId);
                     const chatBox = document.getElementById("chatBox");
