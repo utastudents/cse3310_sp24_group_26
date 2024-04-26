@@ -263,7 +263,6 @@
 
         // Received a broadcast from a different client
         connection.onmessage = function(evt){
-            console.log("WHAAATTTTTTT");
             var msg;
             msg = evt.data;
             console.log("Message received: " + msg);
@@ -296,7 +295,7 @@
                     lobby.innerHTML = "";
                     let LobbyUsers = obj.LobbyUsers;
                     LobbyUsers.forEach(function(player){
-                        console.log("OBJECT: " + player)
+                        
                         var row = lobby.insertRow();
                         var name = row.insertCell(0);
                         var ready = row.insertCell(1);
