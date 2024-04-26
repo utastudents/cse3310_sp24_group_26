@@ -277,23 +277,25 @@
 
         // Received a broadcast from a different client
         connection.onmessage = function(evt){
-
-            let lobby = document.getElementById("lobby-body");
-
             var msg;
             msg = evt.data;
-            
+            console.log("Message received: " + msg);
             let obj = JSON.parse(msg);
 
-            console.log("Message received: " + msg);
 
-            if('error' in obj){
-                alert(obj.user + " tried to start the match \n" + "Not enough players ready in the lobby");
+            if('grid' in obj){
+                console.log(obj.grid);
             }
 
-            if('grid' in obj){ // Grid sent from server
+            
 
+
+            if('grid' in obj){ // Grid sent from server
                 // Generate and display the word search
+                document.getElementById("lobby").classList.add("d-none");
+                let lobby = document.getElementById("lobby");
+                lobby.innerHTML = "";
+                document.getElementById("game").classList.remove("d-none");
                 generateWordSearch(obj.grid);
                 console.log(obj.grid);
 
@@ -315,6 +317,26 @@
             }
 
             if('request' in obj){   // USER EVENTS
+                if(obj.request == 1){
+                    
+                    let lobby = document.getElementById("lobby-body");
+                    lobby.innerHTML = "";
+                    let LobbyUsers = obj.LobbyUsers;
+                    LobbyUsers.forEach(function(player){
+                        
+                        var row = lobby.insertRow();
+                        var name = row.insertCell(0);
+                        var ready = row.insertCell(1);
+
+                        name.textContent = player.user;
+                        if(player.ready == false){
+                            ready.textContent = "Not Ready";
+                        } else{
+                            ready.textContent = "Ready";
+                        }
+                    });
+                } 
+                
                 if(obj.request == 3){   // Since request # is 3, a chatMessage is being sent from a client
                     console.log("Chat message received from broadcast: " + obj.chatMessage + "  From userid: " + obj.UserId);
                     const chatBox = document.getElementById("chatBox");
@@ -346,28 +368,8 @@
                 }
             }
 
-            if(obj.constructor == Array){
-                lobby.innerHTML = "";
 
-                obj.forEach(function(obj)
-                {
-                    console.log("OBJECT: " + obj)
-                    var row = lobby.insertRow();
-                    var name = row.insertCell(0);
-                    var ready = row.insertCell(1);
-
-                    name.textContent = obj.user;
-                    if(obj.ready == false){
-                        ready.textContent = "Not Ready";
-                    } else{
-                        ready.textContent = "Ready";
-                    }
-                });
-
-                const readyHeader = document.getElementById("readyHeader");
-                readyHeader.textContent = `THERE ARE ${obj.length} PLAYERS IN THE LOBBY`;
-                console.log("NUM USERS: " + obj.length);
-            }
+            
         }
 
         function buttonclicked(value){
@@ -432,15 +434,27 @@
         //document.getElementById("startMatchmakingBtn").addEventListener("click", startMatchmaking);
 
         function startMatchmaking() {
-            // User has started the game. Move everyone to the game screen and send a broadcast to load the grid for everyone;
+            // Hide matchmaking form
+            /*
+            document.getElementById("lobby").classList.add("d-none");
+
+            // Show game elements
+            document.getElementById("game").classList.remove("d-none");
+
+            // Update player names
+            document.getElementById("playerOneName").innerText = "@" + UserId.toUpperCase();
+            document.getElementById("playerTwoName").innerText = "@opponent"; // Replace "opponent" with actual opponent's name
+            */
+            // Start matchmaking process or any other game initialization logic
             U = new UserEvent;
-            U.UserId = this.UserId;
             U.request = 5;
+            connection.send(JSON.stringify(U)); 
             U.gamesWon = 0;
             U.gamesLost = 0;
 
             connection.send(JSON.stringify(U));
             console.log("Player started the match: " + JSON.stringify(U));
+
         }
 
         function showProfile() {

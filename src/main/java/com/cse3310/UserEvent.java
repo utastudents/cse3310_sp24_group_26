@@ -1,5 +1,7 @@
 package com.cse3310;
 
+import java.util.Vector;
+
 public class UserEvent {
     int request;
     int GameId;
@@ -9,6 +11,7 @@ public class UserEvent {
     int gamesWon;
     int gamesLost;
     int buttonId;
+    Vector<Lobby> LobbyUsers;
     // int Button[][];
 
     public UserEvent() {

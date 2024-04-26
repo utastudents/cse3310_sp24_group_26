@@ -5,16 +5,16 @@ import java.util.Random;
 import java.util.Collections;
 
 public class Game {
-    //public ArrayList<User> users;
+
     public int GameId;
     public char[][] grid;
     public ArrayList<String> wordBank;
 
-    public Game(ArrayList<String> words)
+    public Game(ArrayList<String> words, int GameId)
     {
-        //users = new ArrayList<User>();
+        
         wordBank = new ArrayList<String>();
-        this.GameId = 0;
+        this.GameId = GameId;
         this.grid = generateGrid(words,wordBank);
     }
     
