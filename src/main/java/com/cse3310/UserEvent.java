@@ -8,6 +8,8 @@ public class UserEvent {
     String UserId;
     String chatMessage;
     String color;
+    int gamesWon;
+    int gamesLost;
     int buttonId;
     Vector<Lobby> LobbyUsers;
     // int Button[][];
