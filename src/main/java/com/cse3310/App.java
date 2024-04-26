@@ -46,6 +46,7 @@ public class App extends WebSocketServer {
 
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
+<<<<<<< HEAD
 /* 
         String filename = "words.txt";
         //Read in file of words
@@ -63,29 +64,33 @@ public class App extends WebSocketServer {
         {
             System.err.println("Error reading file:"+ e.getMessage());
         }
+=======
+
+>>>>>>> main
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
-        Game g = new Game(wordList);
-        String jsonString = gson.toJson(g);
-        System.out.println(jsonString);
+        String jsonString = gson.toJson(LobbyUsers);
         broadcast(jsonString);
+<<<<<<< HEAD
 */
+=======
+>>>>>>> main
         System.out.println(conn.getRemoteSocketAddress().getAddress().getHostAddress() + " connected");
     }
 
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-        
-        for(int i = 0 ; i < ActiveUsers.size() ; i++){
-            if(ActiveUsers.get(i).conn == conn){
+
+        for (int i = 0; i < ActiveUsers.size(); i++) {
+            if (ActiveUsers.get(i).conn == conn) {
                 System.out.println("removing " + ActiveUsers.get(i).username + " from player and lobby list");
                 String tempName = ActiveUsers.get(i).username;
 
-                for(int j = 0 ; j < LobbyUsers.size() ; j++){
-                    if(LobbyUsers.get(j).user.equals(tempName)){
+                for (int j = 0; j < LobbyUsers.size(); j++) {
+                    if (LobbyUsers.get(j).user.equals(tempName)) {
                         LobbyUsers.remove(j);
                     }
-                    
+
                 }
                 ActiveUsers.remove(i);
                 break;
@@ -95,7 +100,7 @@ public class App extends WebSocketServer {
         Gson gson = builder.create();
         String jsonString = gson.toJson(LobbyUsers);
         broadcast(jsonString);
-        
+
         System.out.println(conn + " has closed");
         numReady--;
     }
@@ -111,7 +116,7 @@ public class App extends WebSocketServer {
 
         if (U.request == 1) { // New user logged in
             User userRequest = new User(U.UserId, conn);
-          
+
             // Choosing random user color
             userRequest.color = U.color;
 
@@ -120,7 +125,7 @@ public class App extends WebSocketServer {
             for (User x : ActiveUsers) {
                 System.out.println(x.username);
             }
-            
+
             LobbyUsers.add(new Lobby(userRequest));
             ServerEvent sendBack = new ServerEvent(1, LobbyUsers);
             String jsonString = gson.toJson(sendBack);
@@ -156,6 +161,7 @@ public class App extends WebSocketServer {
             String jsonString = gson.toJson(U);
             System.out.println("User has pressed a letter: " + jsonString);
             broadcast(jsonString);
+<<<<<<< HEAD
         } else if (U.request == 5){
             ArrayList<User> waitingList = new ArrayList<>();
             
@@ -177,6 +183,48 @@ public class App extends WebSocketServer {
                         break;
                     }
                 }
+=======
+        } else if (U.request == 5) { // Game started. Make the grid.
+            int count = 0;
+
+            for (Lobby user : LobbyUsers) {
+                if (user.ready == true) {
+                    count++;
+                }
+            }
+
+            // Check if ALL lobby users are ready
+            if (count == LobbyUsers.size() && LobbyUsers.size() > 1) {
+                String filename = "words.txt";
+                // Read in file of words
+                ArrayList<String> wordList = new ArrayList<>();
+                try (BufferedReader br = new BufferedReader(new FileReader(filename))) {
+                    String line;
+                    while ((line = br.readLine()) != null) {
+                        wordList.add(line.trim());
+                    }
+
+                } catch (IOException e) {
+                    System.err.println("Error reading file:" + e.getMessage());
+                }
+
+                Game g = new Game(wordList);
+                String jsonString = gson.toJson(g);
+                System.out.println(jsonString);
+                broadcast(jsonString);
+
+                // Since the game has started, clear the lobbyuser array
+                LobbyUsers.clear();
+            } else {
+                Error err = new Error(U.UserId, "Not enough players ready in the lobby");
+                String jsonString = gson.toJson(err);
+                System.out.println(jsonString);
+
+                broadcast(jsonString);
+            }
+
+        }
+>>>>>>> main
 
                 //update lobby for those still there
                 ServerEvent sendBack = new ServerEvent(1, LobbyUsers);
@@ -233,7 +281,7 @@ public class App extends WebSocketServer {
     }
 
     public static void main(String[] args) {
-        
+
         // Set up the http server
         try {
             String envPort = System.getenv("HTTP_PORT");
@@ -265,6 +313,5 @@ public class App extends WebSocketServer {
             e.printStackTrace();
         }
 
-        
     }
 }
