@@ -282,6 +282,10 @@
             console.log("Message received: " + msg);
             let obj = JSON.parse(msg);
 
+            if('error' in obj){
+                alert(obj.user + "\n" + obj.error);
+            }
+
 
             if('grid' in obj){ // Game sent from the server
                 console.log(obj.grid);

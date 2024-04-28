@@ -113,6 +113,8 @@ public class App extends WebSocketServer {
 
             for (User a : ActiveUsers) {
                 if (a.username.equals(U.UserId)) {
+                    Error err = new Error(U.UserId, "Error: Username already exists. Enter another name.");
+                    conn.send(gson.toJson(err));
                     return;
                 }
             }
