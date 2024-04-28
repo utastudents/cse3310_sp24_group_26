@@ -283,14 +283,8 @@
             let obj = JSON.parse(msg);
 
 
-            if('grid' in obj){
+            if('grid' in obj){ // Game sent from the server
                 console.log(obj.grid);
-            }
-
-            
-
-
-            if('grid' in obj){ // Grid sent from server
                 // Generate and display the word search
                 document.getElementById("lobby").classList.add("d-none");
                 let lobby = document.getElementById("lobby");
@@ -305,15 +299,7 @@
                 // Show game elements
                 document.getElementById("game").classList.remove("d-none");
 
-                // Hide profile elements
-                document.getElementById("profile").classList.add("d-none");
-
-                // Show game elements
-                document.getElementById("game").classList.remove("d-none");
-
-                // Update player names
-                document.getElementById("playerOneName").innerText = "@" + UserId.toUpperCase();
-                document.getElementById("playerTwoName").innerText = "@opponent"; // Replace "opponent" with actual opponent's name
+                
             }
 
             if('request' in obj){   // USER EVENTS
@@ -366,12 +352,29 @@
                 if(obj.request == 4){   // Request # 4: Letter pressed.
                     console.log("Letter pressed by " + obj.UserId + ": " + obj.buttonId + ". Button color is " + obj.color);
                     const button = document.getElementById(obj.buttonId);
+                    let completedButtons = [];
+                    completedButtons = obj.completedButtons;
+                    console.log("Passed in array of completed buttons: " + completedButtons);
+
+                    if(completedButtons.length != 0){
+                        for(let i = 0; i < completedButtons.length - 1; i++){
+                            console.log("i = " + i);
+                            let completedButton = document.getElementById(completedButtons[i]);
+
+                            // Remove onclick functionality to stop processing the button
+                            completedButton.disabled = true;
+                            completedButton.style.background = obj.color;
+                        }
+
+                        const lastLetter = document.getElementById(completedButtons[completedButtons.length - 1]);
+                        lastLetter.disabled = true;
+                    }
 
                     if(button.style.background === obj.color.toLowerCase()){ // Button previously pressed
                         button.style.background = "white";
                     }
                     else{
-                        button.style.background = obj.color.toLowerCase();
+                        button.style.background = obj.color.toLowerCase();  // New button
                     }
                 }
             }
@@ -493,11 +496,7 @@
         
 
         function processLetter(button){
-            let id = button.getAttribute("id");
-            let row = Math.floor(id / 10);
-            let col = id % 10;
-        
-            let location = new Coordinate(row, col);
+            let id = button.getAttribute('id');
 
             U = new UserEvent;
             U.request = 4;
