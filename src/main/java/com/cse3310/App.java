@@ -159,15 +159,31 @@ public class App extends WebSocketServer {
             broadcast(jsonString);
         } else if (U.request == 3) // User has sent message. Update on everyone's screen;
         {
-            // Message data already packaged. Just broadcast.
             // U has:
             // - request #3
             // - GameId
             // - UserId
             // - chatMessage
-            String jsonString = gson.toJson(U);
-            System.out.println("User has sent message: " + jsonString);
-            broadcast(jsonString);
+
+            UserEvent e = new UserEvent();
+            e.UserId = U.UserId;
+            e.request = U.request;
+            e.chatMessage = U.chatMessage;
+            e.color = U.color;
+
+            int senderGameId = -1;
+
+            for (User user : ActiveUsers) {
+                if (U.UserId.equals(user.username)) {
+                    senderGameId = user.GameId;
+                }
+            }
+
+            for (User user : ActiveUsers) {
+                if ((U.UserId.equals(user.username) != true) && (senderGameId == user.GameId)) {
+                    user.conn.send(gson.toJson(e));
+                }
+            }
 
         } else if (U.request == 4) { // User has pressed a letter. Update button data.
             int id = U.buttonId;

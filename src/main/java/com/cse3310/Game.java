@@ -191,7 +191,7 @@ public class Game {
             System.out.println();
         }
         double endTime = System.currentTimeMillis();
-        System.out.println("Time to generate grid: " + (endTime - startTime));
+        System.out.println("Time to generate grid: " + (endTime - startTime) + " ms");
 
         return grid;
 
