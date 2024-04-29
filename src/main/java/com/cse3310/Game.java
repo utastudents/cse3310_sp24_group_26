@@ -5,7 +5,8 @@ import java.util.Random;
 import java.util.Collections;
 import java.time.Clock;
 
-public class Game {
+public class Game
+{ 
 
     public int GameId;
     public char[][] grid;
@@ -28,7 +29,8 @@ public class Game {
         this.grid = generateGrid(words, wordBank);
     }
 
-    public int isEnd(int id) {
+    public int isEnd(int id)
+    {
         for (int endId : endIds) {
             if (id == endId) {
                 return 0;
@@ -110,9 +112,9 @@ public class Game {
         // Input words into the array
         // Take random words from the word list to put inside a word bank
         int index = 0;
-        int overlap = 0;
-        while (((double) validWordsLetters / (length * width)) < density) {
-//Grab a word and add it to a word length
+        while (((double) validWordsLetters / (length * width)) < density)
+        {
+        //Grab a word and add it to a word length
             String word = words.get(rand.nextInt(words.size())).toUpperCase();
             while (word.length() > maxLength) {
                 word = words.get(rand.nextInt(words.size())).toUpperCase();
@@ -152,7 +154,9 @@ public class Game {
                 }
 
             } while (fits == false && tries < 100);
-            if (tries >= 100) {
+
+            if (tries >= 100)
+            {
                 fits = false;
                 wordBank.remove(index);
             }
@@ -205,17 +209,6 @@ public class Game {
         System.out.println("Horizontals: " +  (horizontals/index));
         System.out.println("Downward verticals: " + (vertDown/index));
         System.out.println("Upward verticals:" + (vertUp/index));
-        //Fill in rest of the grid with random letters
-        //Print grid
-        for(int i = 0;i < width; i++)
-        {
-            for(int j = 0; j < length; j++)
-            {   
-                if(grid[i][j] == 0)
-                {
-                    
-
-        }
         System.out.println(" Actual Density: " + (double) validWordsLetters / (length * width));
         // Fill in rest of the grid with random letters
         // Print grid
@@ -242,6 +235,7 @@ public class Game {
 
     }
 
+
     public void checkWin(User user) {
 
     }
@@ -254,3 +248,4 @@ public class Game {
 
     }
 }
+    
