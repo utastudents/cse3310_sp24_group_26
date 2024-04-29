@@ -1,6 +1,7 @@
 package com.cse3310;
 
 import java.util.Vector;
+import java.util.ArrayList;
 
 public class UserEvent {
     int request;
@@ -12,6 +13,7 @@ public class UserEvent {
     int gamesLost;
     int buttonId;
     Vector<Lobby> LobbyUsers;
+    ArrayList<Integer> completedButtons;
     // int Button[][];
 
     public UserEvent() {

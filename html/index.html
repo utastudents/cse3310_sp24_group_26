@@ -264,6 +264,7 @@
         }
 
         var colors = ["Red", "Green", "Blue", "Yellow", "Purple"];
+        var GameId = 0;
 
         var connection = null;
         var serverUrl;
@@ -282,20 +283,19 @@
             console.log("Message received: " + msg);
             let obj = JSON.parse(msg);
 
-
-            if('grid' in obj){
-                console.log(obj.grid);
+            if('error' in obj){
+                alert(obj.user + "\n" + obj.error);
             }
 
-            
 
-
-            if('grid' in obj){ // Grid sent from server
+            if('grid' in obj){ // Game sent from the server
+                console.log(obj.grid);
                 // Generate and display the word search
                 document.getElementById("lobby").classList.add("d-none");
                 let lobby = document.getElementById("lobby");
                 lobby.innerHTML = "";
                 document.getElementById("game").classList.remove("d-none");
+                
                 generateWordSearch(obj.grid);
                 console.log(obj.grid);
 
@@ -305,15 +305,7 @@
                 // Show game elements
                 document.getElementById("game").classList.remove("d-none");
 
-                // Hide profile elements
-                document.getElementById("profile").classList.add("d-none");
-
-                // Show game elements
-                document.getElementById("game").classList.remove("d-none");
-
-                // Update player names
-                document.getElementById("playerOneName").innerText = "@" + UserId.toUpperCase();
-                document.getElementById("playerTwoName").innerText = "@opponent"; // Replace "opponent" with actual opponent's name
+                
             }
 
             if('request' in obj){   // USER EVENTS
@@ -327,8 +319,12 @@
 
 
 
-                    let lobbyBody = document.getElementById("lobby-body");
-                    lobbyBody.innerHTML = "";
+                    const lobbyBody = document.getElementById("lobby-body");
+
+                    if(lobbyBody != null){
+                        lobbyBody.innerHTML = "";
+                    }
+
                     let LobbyUsers = obj.LobbyUsers;
                     LobbyUsers.forEach(function(player){
                         
@@ -343,6 +339,7 @@
                             ready.textContent = "Ready";
                         }
                     });
+
                 } 
                 
                 if(obj.request == 3){   // Since request # is 3, a chatMessage is being sent from a client
@@ -366,12 +363,29 @@
                 if(obj.request == 4){   // Request # 4: Letter pressed.
                     console.log("Letter pressed by " + obj.UserId + ": " + obj.buttonId + ". Button color is " + obj.color);
                     const button = document.getElementById(obj.buttonId);
+                    let completedButtons = [];
+                    completedButtons = obj.completedButtons;
+                    console.log("Passed in array of completed buttons: " + completedButtons);
+
+                    if(completedButtons.length != 0){
+                        for(let i = 0; i < completedButtons.length - 1; i++){
+                            console.log("i = " + i);
+                            let completedButton = document.getElementById(completedButtons[i]);
+
+                            // Remove onclick functionality to stop processing the button
+                            completedButton.disabled = true;
+                            completedButton.style.background = obj.color;
+                        }
+
+                        const lastLetter = document.getElementById(completedButtons[completedButtons.length - 1]);
+                        lastLetter.disabled = true;
+                    }
 
                     if(button.style.background === obj.color.toLowerCase()){ // Button previously pressed
                         button.style.background = "white";
                     }
                     else{
-                        button.style.background = obj.color.toLowerCase();
+                        button.style.background = obj.color.toLowerCase();  // New button
                     }
                 }
             }
@@ -493,14 +507,11 @@
         
 
         function processLetter(button){
-            let id = button.getAttribute("id");
-            let row = Math.floor(id / 10);
-            let col = id % 10;
-        
-            let location = new Coordinate(row, col);
+            let id = button.getAttribute('id');
 
             U = new UserEvent;
             U.request = 4;
+            this.GameId = GameId;
             U.GameId = this.GameId;
             U.UserId = this.UserId;
             U.color = this.color;
