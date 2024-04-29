@@ -60,9 +60,6 @@
                         <a class="nav-link" href="#">HOME</a>
                     </li>
                     <li>
-                        <a class="nav-link" href="#leaderboard">LEADERBOARD</a>
-                    </li>
-                    <li>
                         <a class="nav-link" href="#profile" onclick="showProfile()"> PROFILE</a>
                     </li>
                     <li>
@@ -131,7 +128,6 @@
                         <td id="playerTwoName">@</td>
                     </tr>
                 </table>
-                <p>FIND THE WORDS: <span id="wordList"></span></p>
                 <!-- Multi-user chat box -->
                 <div class="container-fluid">
                     <div class=" row justify-content-center">
@@ -150,51 +146,11 @@
                     </div>
                 </div>
             </div>
-            
         </div>
     </div>
 
-    <!-- DO A FOR EACH LOOP TO DISPLAY THE PLAYERS IN THE LEADERBOARD -->
-    <div data-aos="fade-up" class="d-flex justify-content-center flex-column text-center h-auto pb-5" id="leaderboard">
-        <h1>LEADERBOARD</h1>
-        
-        <table class="container table table-light h5">
-            <tr>
-                <td>RANK</td>
-                <td>PLAYER</td>
-                <td>GAME WON</td>
-            </tr>
-            <tr>
-                <td id="playerRank">1ST</td>
-                <td id="playerName">@JOHNLEE123</td>
-                <td id="playerGame"">12</td>
-            </tr>
-            <tr>
-                <td id="playerRank">2ND</td>
-                <td id="playerName">@JOHN123</td>
-                <td id="playerGame"">10</td>
-            </tr>
-            <tr>
-                <td id="playerRank">3RD</td>
-                <td id="playerName">@JOHN123</td>
-                <td id="playerGame"">10</td>
-            </tr>
-            <tr>
-                <td id="playerRank">4TH</td>
-                <td id="playerName">@JOHN123</td>
-                <td id="playerGame"">10</td>
-            </tr>
-            <tr>
-                <td id="playerRank">5TH</td>
-                <td id="playerName">@JOHN123</td>
-                <td id="playerGame"">10</td>
-            </tr>
-            <tr>
-                <td id="playerRank">6TH</td>
-                <td id="playerName">@JOHN123</td>
-                <td id="playerGame"">10</td>
-            </tr>
-        </table>
+    <div data-aos="fade-up" class="container d-flex justify-content-center flex-column text-center h-auto pb-5 d-none" id="wordBank">
+        <h1>WORD BANK</h1>
     </div>
 
     <div class="container-fluid custom-body d-none" id="profile">
@@ -300,10 +256,47 @@
                 console.log(obj.grid);
                 // Generate and display the word search
                 document.getElementById("lobby").classList.add("d-none");
-                let lobby = document.getElementById("lobby");
+
+                const lobby = document.getElementById("lobby");
                 lobby.innerHTML = "";
+
                 document.getElementById("game").classList.remove("d-none");
-                
+                document.getElementById("wordBank").classList.remove("d-none");
+
+                const wordBank = obj.wordBank;
+                console.log("Wordbank from game sent by the server: " + wordBank);
+
+                const wordTable = document.getElementById("wordBank");
+
+                let row = document.createElement("div");
+                row.classList.add("row");
+                wordTable.appendChild(row);
+
+                let wordCount = 0;
+                while(wordCount != wordBank.length){
+                    if((wordCount) % 3 == 0){ // 3 words have gone in, make a new row
+                        row = document.createElement("div");
+                        row.classList.add("row");
+                        wordTable.appendChild(row);
+                    }
+
+                    let colNum = 0;
+                    while(colNum != 3){
+                        let col = document.createElement("div");
+                        col.classList.add("col-sm");
+
+                        if(wordCount == wordBank.length){   // Start printing blank cols to straighten the table
+                            col.textContent = ""
+                        }else{
+                            col.textContent = wordBank[wordCount];
+                            wordCount++;
+                        }
+
+                        row.appendChild(col);
+                        colNum++;
+                    }
+                }
+
                 generateWordSearch(obj.grid);
                 console.log(obj.grid);
 
@@ -318,15 +311,6 @@
 
             if('request' in obj){   // USER EVENTS
                 if(obj.request == 1){
-
-                    const logIn = document.getElementById("log-in");
-                    logIn.classList.add("d-none");
-
-                    const lobby = document.getElementById("lobby");
-                    lobby.classList.remove("d-none");
-
-
-
                     const lobbyBody = document.getElementById("lobby-body");
 
                     if(lobbyBody != null){
@@ -412,9 +396,14 @@
                 let index = (Math.floor(Math.random() * colors.length));
                 let color = colors[index];
                 colors.splice(index, 1);
-
                 U.color = color;
                 this.color = color;
+
+                const logIn = document.getElementById("log-in");
+                logIn.classList.add("d-none");
+
+                const lobby = document.getElementById("lobby");
+                lobby.classList.remove("d-none");
 
                 connection.send(JSON.stringify(U));
                 /*
