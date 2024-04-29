@@ -264,6 +264,7 @@
         }
 
         var colors = ["Red", "Green", "Blue", "Yellow", "Purple"];
+        var GameId = 0;
 
         var connection = null;
         var serverUrl;
@@ -294,6 +295,7 @@
                 let lobby = document.getElementById("lobby");
                 lobby.innerHTML = "";
                 document.getElementById("game").classList.remove("d-none");
+                
                 generateWordSearch(obj.grid);
                 console.log(obj.grid);
 
@@ -317,8 +319,12 @@
 
 
 
-                    let lobbyBody = document.getElementById("lobby-body");
-                    lobbyBody.innerHTML = "";
+                    const lobbyBody = document.getElementById("lobby-body");
+
+                    if(lobbyBody != null){
+                        lobbyBody.innerHTML = "";
+                    }
+
                     let LobbyUsers = obj.LobbyUsers;
                     LobbyUsers.forEach(function(player){
                         
@@ -333,6 +339,7 @@
                             ready.textContent = "Ready";
                         }
                     });
+
                 } 
                 
                 if(obj.request == 3){   // Since request # is 3, a chatMessage is being sent from a client
@@ -504,6 +511,7 @@
 
             U = new UserEvent;
             U.request = 4;
+            this.GameId = GameId;
             U.GameId = this.GameId;
             U.UserId = this.UserId;
             U.color = this.color;

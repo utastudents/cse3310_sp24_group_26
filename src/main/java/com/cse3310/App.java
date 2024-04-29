@@ -29,7 +29,6 @@ public class App extends WebSocketServer {
     Vector<Lobby> LobbyUsers = new Vector<Lobby>();
     ArrayList<String> colors = new ArrayList<String>();
     int numReady = 0;
-
     int GameId = 0;
 
     public App(int port) {
@@ -172,17 +171,20 @@ public class App extends WebSocketServer {
 
         } else if (U.request == 4) { // User has pressed a letter. Update button data.
             int id = U.buttonId;
-            int GameId = 0;
             int userIndex = 0;
+            int gameid = 0;
 
-            for (User u : ActiveUsers) {
-                if (U.UserId == u.username) {
-                    GameId = u.GameId;
-                    userIndex = ActiveUsers.indexOf(u);
+            for (User user : ActiveUsers) {
+                if (U.UserId.equals(user.username)) {
+                    gameid = user.GameId;
+                    userIndex = ActiveUsers.indexOf(user);
+
+                    System.out.println("gameid = " + gameid);
+                    System.out.println("user.GameId = " + user.GameId);
                 }
             }
 
-            Game g = ActiveGames.get(GameId);
+            Game g = ActiveGames.get(gameid);
 
             if (g.ActiveButtons.contains(id)) {
                 g.ActiveButtons.remove(g.ActiveButtons.indexOf(id));
@@ -204,6 +206,7 @@ public class App extends WebSocketServer {
             UserEvent e = new UserEvent();
             e.buttonId = U.buttonId;
             e.UserId = U.UserId;
+            e.GameId = GameId;
             e.color = U.color;
             e.completedButtons = g.CompletedButtons;
             e.request = U.request;
@@ -212,7 +215,8 @@ public class App extends WebSocketServer {
             System.out.println(jsonString);
 
             for (User u : ActiveUsers) {
-                if (u.GameId == GameId) {
+                if (u.GameId == gameid) {
+                    System.out.println("User " + u.username + " assigned game " + gameid);
                     u.conn.send(jsonString);
                 }
             }
@@ -272,12 +276,14 @@ public class App extends WebSocketServer {
                 for (User u : waitingList) {
                     for (User user : ActiveUsers) {
                         if (user == u) {
+                            System.out.println("User being assigned to game: " + GameId);
                             user.GameId = GameId;
                         }
                     }
 
                     jsonString = gson.toJson(ActiveGames.get(GameId));
                     u.conn.send(jsonString);
+                    System.out.println("Game started. User set to game " + u.GameId);
                 }
 
                 GameId++;
