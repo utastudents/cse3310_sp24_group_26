@@ -63,7 +63,7 @@
                         <a class="nav-link" href="#leaderboard">LEADERBOARD</a>
                     </li>
                     <li>
-                        <a class="nav-link" href="#">PROFILE</a>
+                        <a class="nav-link" href="#profile" onclick="showProfile()"> PROFILE</a>
                     </li>
                     <li>
                         <a class="nav-link" href="#contact">SUPPORT</a>
@@ -78,7 +78,7 @@
         <div id="home" class="container-fluid text-center flex-column d-flex justify-content-center align-items-center"
             style="height: 100vh;">
             <h1 style="font-size: 5vw;">READY TO SEARCH?</h1>
-            <h3 >THERE ARE #_ PLAYERS IN THE LOBBY</h3>
+            <h3 ID="readyHeader">THERE ARE # PLAYERS IN THE LOBBY</h3>
             <h4 >ENTER YOUR USERNAME TO START</h4>
             <form name="userForm">
                 <div class="input-group mb-2 ">
@@ -94,7 +94,7 @@
         </div>
     </div>
 
-    <div class="d-flex justify-content-center flex-column text-center h-auto pb-5" id="lobby">
+    <div class="d-flex justify-content-center flex-column text-center h-auto pb-5 d-none" id="lobby">
         <h1>LOBBY</h1>
         
         <table class="container table table-light h5">
@@ -197,6 +197,18 @@
         </table>
     </div>
 
+    <div class="container-fluid custom-body d-none" id="profile">
+        <div id="home" class="container-fluid text-center flex-column d-flex justify-content-center align-items-center"
+            style="height: 100vh;">
+            <h1 style="font-size: 5vw;">PROFILE</h1>
+            <h2 id="profile_username"> USERNAME: </h2>
+            <h3 id="profile_games_won">GAMES WON: </h3>
+            <h3 id="profile_games_lost">GAMES LOST: </h3>
+            <a class="btn btn-primary justify-content-center btn-lg active" onclick="hideProfile()"
+                role="button" aria-pressed="true" >HIDE</a>
+        </div>
+    </div>
+
     </div>
 
     <section data-aos="fade-up" id="contact">
@@ -235,7 +247,6 @@
     <script src="bootstrap-5.3.3-dist/js/bootstrap.js"></script>
     <script src="bootstrap-5.3.3-dist/js/js.js"></script>
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
-    <script src="bootstrap-5.3.3-dist/js/usernameValidation.js"></script>
 
     <script>AOS.init();</script>
     <!-- <script src="usernameValidation.js"></script> -->
@@ -245,11 +256,15 @@
             request;
             GameId;
             UserId;
+            gamesWon;
+            gamesLost;
             chatMessage;
+            buttonId;
+            color;
         }
 
-        let currentUser = new UserEvent;
-        currentUser.UserId = this.UserId;
+        var colors = ["Red", "Green", "Blue", "Yellow", "Purple"];
+        var GameId = 0;
 
         var connection = null;
         var serverUrl;
@@ -263,72 +278,125 @@
 
         // Received a broadcast from a different client
         connection.onmessage = function(evt){
-
-            let lobby = document.getElementById("lobby-body");
-
             var msg;
             msg = evt.data;
-            
+            console.log("Message received: " + msg);
             let obj = JSON.parse(msg);
 
-            if('grid' in obj){
+            if('timerButton' in obj){
+                console.log("Client has received a timer button: " + obj.timerButton);
+                const button = document.getElementById(obj.timerButton);
+                
+                button.style.background = "rgb(255,255,0)";
+                button.style.border = "solid red";
+            }
+
+            if('error' in obj){
+                alert(obj.user + "\n" + obj.error);
+            }
+
+
+            if('grid' in obj){ // Game sent from the server
                 console.log(obj.grid);
-            }
-
-            console.log("Message received: " + msg);
-            console.log("NUM USERS: " + obj.length);
-
-            if('grid' in obj){ // Grid sent from server
-
                 // Generate and display the word search
+                document.getElementById("lobby").classList.add("d-none");
+                let lobby = document.getElementById("lobby");
+                lobby.innerHTML = "";
+                document.getElementById("game").classList.remove("d-none");
+                
                 generateWordSearch(obj.grid);
+                console.log(obj.grid);
+
+                // Hide matchmaking form
+                document.getElementById("lobby").classList.add("d-none");
+
+                // Show game elements
+                document.getElementById("game").classList.remove("d-none");
+
+                
             }
 
-            if('request' in obj){   // Is a UserEvent broadcast
-                if(obj.request == 3){   // Is a chatMessage
+            if('request' in obj){   // USER EVENTS
+                if(obj.request == 1){
+
+                    const logIn = document.getElementById("log-in");
+                    logIn.classList.add("d-none");
+
+                    const lobby = document.getElementById("lobby");
+                    lobby.classList.remove("d-none");
+
+
+
+                    const lobbyBody = document.getElementById("lobby-body");
+
+                    if(lobbyBody != null){
+                        lobbyBody.innerHTML = "";
+                    }
+
+                    let LobbyUsers = obj.LobbyUsers;
+                    LobbyUsers.forEach(function(player){
+                        
+                        var row = lobbyBody.insertRow();
+                        var name = row.insertCell(0);
+                        var ready = row.insertCell(1);
+
+                        name.textContent = player.user;
+                        if(player.ready == false){
+                            ready.textContent = "Not Ready";
+                        } else{
+                            ready.textContent = "Ready";
+                        }
+                    });
+
+                } 
+                
+                if(obj.request == 3){   // Since request # is 3, a chatMessage is being sent from a client
                     console.log("Chat message received from broadcast: " + obj.chatMessage + "  From userid: " + obj.UserId);
                     const chatBox = document.getElementById("chatBox");
 
                     const para = document.createElement("p");
                     const node = document.createTextNode(obj.UserId + ":\n" + obj.chatMessage);
                     para.appendChild(node);
-
-                    const rAlign = document.createAttribute("align");
-                    rAlign.value = "right";
-
-                    const lAlign = document.createAttribute("align");
-                    lAlign.value = "left"; 
-
-                    console.log("Current user Id: " + currentUser);
-                    console.log("Object user Id: " + obj.UserId);
-
-                    if(currentUser == obj.UserId){
-                        para.setAttributeNode(rAlign);
-                    }
-                    else{
-                        para.setAttributeNode(lAlign);
-                    }
+                    para.setAttribute("align", "left");
+                    para.style.background = obj.color;
+                    para.style.color = "white";
 
                     chatBox.appendChild(para);
                 }
+
+                if(obj.request == 4){   // Request # 4: Letter pressed.
+                    console.log("Letter pressed by " + obj.UserId + ": " + obj.buttonId + ". Button color is " + obj.color);
+                    const button = document.getElementById(obj.buttonId);
+                    let completedButtons = [];
+                    completedButtons = obj.completedButtons;
+                    console.log("Passed in array of completed buttons: " + completedButtons);
+
+                    if(completedButtons.length != 0){
+                        for(let i = 0; i < completedButtons.length - 1; i++){
+                            console.log("i = " + i);
+                            let completedButton = document.getElementById(completedButtons[i]);
+
+                            // Remove onclick functionality to stop processing the button
+                            completedButton.disabled = true;
+                            completedButton.style.background = obj.color;
+                        }
+
+                        const lastLetter = document.getElementById(completedButtons[completedButtons.length - 1]);
+                        lastLetter.disabled = true;
+                    }
+
+                    if(button.style.background === obj.color.toLowerCase()){ // Button previously pressed
+                        button.style.background = "white";
+                    }
+                    else{
+                        button.style.background = obj.color.toLowerCase();  // New button
+                        button.style.border = "";
+                    }
+                }
             }
 
-            lobby.innerHTML = "";
 
-            obj.forEach(function(obj){
-                console.log("OBJECT: " + obj)
-                var row = lobby.insertRow();
-                var name = row.insertCell(0);
-                var ready = row.insertCell(1);
-
-                name.textContent = obj.user;
-                if(obj.ready == false){
-                    ready.textContent = "Not Ready";
-                } else{
-                    ready.textContent = "Ready";
-                }
-                
-            });
+            
         }
 
         function buttonclicked(value){
@@ -336,11 +404,27 @@
             if(value == 1){
                 let username = document.getElementById("username").value;
                 this.UserId = username;
+                this.gamesLost = 0;
+                this.gamesWon = 0;
                 U.UserId = username;
                 U.request = 1;
+
+                let index = (Math.floor(Math.random() * colors.length));
+                let color = colors[index];
+                colors.splice(index, 1);
+
+                U.color = color;
+                this.color = color;
+
                 connection.send(JSON.stringify(U));
-                let div = document.getElementById("log-in");
-                div.classList.add("d-none");
+                /*
+                
+                const logIn = document.getElementById("log-in");
+                logIn.classList.add("d-none");
+
+                const lobby = document.getElementById("lobby");
+                lobby.classList.remove("d-none");
+                */
             } else if (value == 2){
                 U.UserId = this.UserId;
                 U.request = 2;
@@ -361,10 +445,24 @@
                 alert("Message exceeds " + limit + " character limit. Try again.");
             }
             else{
+                const chatBox = document.getElementById("chatBox");
+
+                const para = document.createElement("p");
+                const node = document.createTextNode(this.UserId + ":\n" + msg);
+                para.appendChild(node);
+                para.setAttribute("align", "right");
+                para.style.background = this.color.toLowerCase();
+                para.style.color = "white";
+
+                chatBox.appendChild(para);
+
                 U = new UserEvent;
                 U.request = 3;
                 U.GameId = this.GameId;
                 U.UserId = this.UserId;
+                U.color = this.color;
+                U.gamesWon = this.gamesWon;
+                U.gamesLost = this.gamesLost;
                 U.chatMessage = msg;
 
                 connection.send(JSON.stringify(U)); 
@@ -378,6 +476,7 @@
 
         function startMatchmaking() {
             // Hide matchmaking form
+            /*
             document.getElementById("lobby").classList.add("d-none");
 
             // Show game elements
@@ -386,8 +485,31 @@
             // Update player names
             document.getElementById("playerOneName").innerText = "@" + UserId.toUpperCase();
             document.getElementById("playerTwoName").innerText = "@opponent"; // Replace "opponent" with actual opponent's name
-
+            */
             // Start matchmaking process or any other game initialization logic
+            U = new UserEvent;
+            U.request = 5;
+            connection.send(JSON.stringify(U)); 
+            U.gamesWon = 0;
+            U.gamesLost = 0;
+
+            connection.send(JSON.stringify(U));
+            console.log("Player started the match: " + JSON.stringify(U));
+
+        }
+
+        function showProfile() {
+            // Show profile elements
+            document.getElementById("profile").classList.remove("d-none");
+            document.getElementById("profile_username").innerText = "USERNAME: " + UserId.toUpperCase();
+            document.getElementById("profile_games_won").innerText = "GAMES WON: " + gamesWon;
+            document.getElementById("profile_games_lost").innerText = "GAMES LOST: " + gamesLost;
+
+        }
+
+        function hideProfile() {
+            // Hide profile elements
+            document.getElementById("profile").classList.add("d-none");
         }
 
     </script>
@@ -400,18 +522,27 @@
             }
         }
         
-        function getLetterLocation(button){
-            let id = button.id;
-            let row = Math.floor(id / 10);
-            let col = id % 10;
-        
-            let location = new Coordinate(row, col);
+
+        function processLetter(button){
+            let id = button.getAttribute('id');
+
+            U = new UserEvent;
+            U.request = 4;
+            U.UserId = this.UserId;
+            U.color = this.color;
+            U.buttonId = id;
+
+            console.log("this.color is : " + U.color);
+
+            console.log("User pressed button. " + JSON.stringify(U) + " sent to server");
+
+            connection.send(JSON.stringify(U));
         }
     </script>
 
     <script>
         const wordsToFind = ['apple', 'banana', 'cherry', 'grape', 'orange', 'pear', 'kiwi', 'peach', 'mango','melon' ];
-        const gridSize = 40;
+        const gridSize = 20;
         const gridDiv = document.getElementById('grid');
         const wordListElement = document.getElementById('wordList');
         const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -419,6 +550,7 @@
         // Function to generate the word search grid
         function generateWordSearch(grid) {
             let n = 0;
+            gridDiv.innerHTML = "";
 
             for (let i = 0; i < gridSize; i++) {
                 const div = document.createElement("div");
@@ -426,11 +558,10 @@
 
                 for (let j = 0; j < gridSize; j++) {
                     const button = document.createElement("button");
-                    button.textContent = letters[Math.floor(Math.random() * letters.length)];
+                    button.textContent = grid[i][j];
 
-                    const buttonAttr = document.createAttribute("id");
-                    buttonAttr.value = `${n}`;
-                    button.setAttributeNode(buttonAttr);
+                    button.setAttribute("id", `${n}`);
+                    button.setAttribute("onclick", "processLetter(this)");
 
                     div.appendChild(button);
 
@@ -439,8 +570,6 @@
 
             }
         }
-
-        generateWordSearch(); // For testing. Will remove when grid is broadcasted.
     </script>
 </body>
 
