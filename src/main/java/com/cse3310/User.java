@@ -17,6 +17,7 @@ public class User {
         this.wordCount = 0;
         this.gamesWon = 0;
         this.gamesLost = 0;
+        this.GameId = -1;
     }
 
     public void setName(String newUsername) {

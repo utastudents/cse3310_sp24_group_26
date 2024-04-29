@@ -199,6 +199,8 @@ public class App extends WebSocketServer {
                 // If the start button is also active
                 if (g.ActiveButtons.contains(startId)) {
                     g.CompletedButtons = g.getCompletedButtons(startId, id);
+                    g.AllCompletedButtons.addAll(g.CompletedButtons);
+
                     ActiveUsers.get(userIndex).wordCount++;
                 }
             }
@@ -206,7 +208,7 @@ public class App extends WebSocketServer {
             UserEvent e = new UserEvent();
             e.buttonId = U.buttonId;
             e.UserId = U.UserId;
-            e.GameId = GameId;
+            e.GameId = gameid;
             e.color = U.color;
             e.completedButtons = g.CompletedButtons;
             e.request = U.request;
@@ -306,6 +308,37 @@ public class App extends WebSocketServer {
         setConnectionLostTimeout(0);
     }
 
+    class LetterTimer extends TimerTask {
+        public void run() {
+            GsonBuilder builder = new GsonBuilder();
+            Gson gson = builder.create();
+            int randChoice;
+            int chosenButton;
+
+            for (int i = 0; i < ActiveGames.size(); i++) {
+                Game g = ActiveGames.get(i);
+
+                do {
+                    randChoice = (int) Math.floor(Math.random() * g.startIds.size());
+                    chosenButton = g.startIds.get(randChoice);
+                } while (g.AllCompletedButtons.contains(chosenButton) == true);
+
+                for (User u : ActiveUsers) {
+                    if (u.GameId == i) { // Target users in game i
+                        System.out.println("Timer task has occurred on button " + chosenButton);
+
+                        timerEvent e = new timerEvent();
+                        e.timerButton = chosenButton;
+
+                        u.conn.send(gson.toJson(e));
+                    }
+                }
+                System.out.println("All completed buttons in the game: " + g.AllCompletedButtons);
+            }
+
+        }
+    }
+
     public static void main(String[] args) {
 
         // Set up the http server
@@ -329,6 +362,11 @@ public class App extends WebSocketServer {
 
             App A = new App(socketPort);
             A.start();
+
+            LetterTimer letterTimer = A.new LetterTimer();
+
+            Timer timer = new Timer();
+            timer.scheduleAtFixedRate(letterTimer, 0, 30000);
 
             String[] c = { "Red", "Green", "Blue", "Yellow", "Purple" };
 
