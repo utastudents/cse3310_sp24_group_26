@@ -357,13 +357,9 @@
                     const para = document.createElement("p");
                     const node = document.createTextNode(obj.UserId + ":\n" + obj.chatMessage);
                     para.appendChild(node);
-
-                    if(obj.UserId = U.userId){
-                        para.setAttribute("align", "right");
-                    }
-                    else{
-                        para.setAttribute("align", "left");
-                    }
+                    para.setAttribute("align", "left");
+                    para.style.background = obj.color;
+                    para.style.color = "white";
 
                     chatBox.appendChild(para);
                 }
@@ -449,10 +445,22 @@
                 alert("Message exceeds " + limit + " character limit. Try again.");
             }
             else{
+                const chatBox = document.getElementById("chatBox");
+
+                const para = document.createElement("p");
+                const node = document.createTextNode(this.UserId + ":\n" + msg);
+                para.appendChild(node);
+                para.setAttribute("align", "right");
+                para.style.background = this.color.toLowerCase();
+                para.style.color = "white";
+
+                chatBox.appendChild(para);
+
                 U = new UserEvent;
                 U.request = 3;
                 U.GameId = this.GameId;
                 U.UserId = this.UserId;
+                U.color = this.color;
                 U.gamesWon = this.gamesWon;
                 U.gamesLost = this.gamesLost;
                 U.chatMessage = msg;
@@ -520,8 +528,6 @@
 
             U = new UserEvent;
             U.request = 4;
-            this.GameId = GameId;
-            U.GameId = this.GameId;
             U.UserId = this.UserId;
             U.color = this.color;
             U.buttonId = id;
