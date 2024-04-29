@@ -3,6 +3,7 @@ package com.cse3310;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Collections;
+import java.time.Clock;
 
 public class Game {
 
@@ -13,6 +14,7 @@ public class Game {
     public ArrayList<Integer> endIds;
     public ArrayList<Integer> ActiveButtons;
     public ArrayList<Integer> CompletedButtons;
+    public ArrayList<Integer> AllCompletedButtons;
 
     public Game(ArrayList<String> words, int GameId) {
         this.wordBank = new ArrayList<String>();
@@ -20,6 +22,7 @@ public class Game {
         this.endIds = new ArrayList<Integer>();
         this.ActiveButtons = new ArrayList<Integer>();
         this.CompletedButtons = new ArrayList<Integer>();
+        this.AllCompletedButtons = new ArrayList<Integer>();
 
         this.GameId = GameId;
         this.grid = generateGrid(words, wordBank);
@@ -84,11 +87,10 @@ public class Game {
     }
 
     public char[][] generateGrid(ArrayList<String> words, ArrayList<String> wordbank) {
-
+        double startTime = System.currentTimeMillis();
         Random rand = new Random();
         int length = 20;
         int width = 20;
-        int areaPortion = 5;
         char[][] grid = new char[width][length];
         String alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
         String insertWord;
@@ -188,6 +190,8 @@ public class Game {
             }
             System.out.println();
         }
+        double endTime = System.currentTimeMillis();
+        System.out.println("Time to generate grid: " + (endTime - startTime));
 
         return grid;
 
