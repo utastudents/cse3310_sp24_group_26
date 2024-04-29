@@ -373,7 +373,7 @@ public class App extends WebSocketServer {
             envPort = System.getenv("WEBSOCKET_PORT");
             int socketPort = 9126;
             if (envPort != null) {
-                socketPort = Integer.valueOf("envPort");
+                socketPort = Integer.valueOf(envPort);
             }
 
             App A = new App(socketPort);
