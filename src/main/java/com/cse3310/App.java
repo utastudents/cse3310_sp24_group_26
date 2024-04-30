@@ -106,7 +106,7 @@ public class App extends WebSocketServer {
             ActiveUsers.remove(ActiveUsers.indexOf(thisUser));
         }
 
-        if (usersIngame < 2) {
+        if ((usersIngame < 2) && (gameid != -1)) {
             forceDisconnect(gameid);
             for (User u : ActiveUsers) {
                 if (u.GameId == gameid) {
