@@ -30,7 +30,7 @@ public class App extends WebSocketServer {
     ArrayList<String> colors = new ArrayList<String>();
     int numReady = 0;
     int GameId = 0;
-    static String appVersion;
+    String appVersion = "";
 
     public App(int port) {
         super(new InetSocketAddress(port));
