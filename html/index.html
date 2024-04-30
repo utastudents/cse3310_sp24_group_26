@@ -238,6 +238,11 @@
             var msg;
             msg = evt.data;
             console.log("Message received: " + msg);
+            if (msg == "disconnect"){
+                location.reload();
+                alert("User disconnected. Not enough players. \nRelog and find new match.")
+            }
+
             let obj = JSON.parse(msg);
 
             if('version' in obj){
@@ -256,6 +261,7 @@
 
             if('error' in obj){
                 alert(obj.user + "\n" + obj.error);
+                return;
             }
 
             // User started a game. Update the list of players in the current game;

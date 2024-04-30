@@ -57,7 +57,7 @@ public class App extends WebSocketServer {
         int gameid = 0;
         PlayerList list = new PlayerList();
         for (int i = 0; i < ActiveUsers.size(); i++) {
-            if (ActiveUsers.get(i).conn == conn) {
+            if (ActiveUsers.get(i).GameId > -1 && ActiveUsers.get(i).conn == conn) {
                 // Find game the user is in
                 for (User user : ActiveUsers) {
                     if (ActiveUsers.get(i).equals(user)) {
@@ -75,12 +75,15 @@ public class App extends WebSocketServer {
                 }
 
                 // Send completed game list to all users in the specific game
+                int usersIngame = 0;
                 for (User user : ActiveUsers) {
                     if (gameid == user.GameId && ActiveUsers.get(i).username != user.username) {
+                        usersIngame++;
                         String jsonString = gson.toJson(list);
                         user.conn.send(jsonString);
                     }
                 }
+
                 System.out.println("removing " + ActiveUsers.get(i).username + " from player and lobby list");
                 String tempName = ActiveUsers.get(i).username;
 
@@ -94,8 +97,16 @@ public class App extends WebSocketServer {
 
                 }
                 ActiveUsers.remove(i);
+                if (usersIngame < 2) {
+                    forceDisconnect(gameid);
+                }
                 break;
             }
+        }
+
+        ArrayList<String> users = new ArrayList<>();
+        for (User u : ActiveUsers) {
+            users.add(u.username);
         }
 
         String jsonString = gson.toJson(LobbyUsers);
@@ -114,11 +125,11 @@ public class App extends WebSocketServer {
         System.out.println(U.UserId + " sent request " + U.request);
 
         if (U.request == 0) {
+            System.out.println("Version " + appVersion + " applied to title");
             appVersion = System.getenv("VERSION");
             Version version = new Version(appVersion);
 
             String jsonString = gson.toJson(version);
-            System.out.println("Broadcasted string: " + jsonString);
 
             broadcast(jsonString);
         }
@@ -162,7 +173,6 @@ public class App extends WebSocketServer {
 
         } else if (U.request == 2) // User readying or unreadying. Update on everyone's screen.
         {
-            System.out.println("ENTERED HERE");
             for (Lobby i : LobbyUsers) {
                 if (i.user.equals(U.UserId)) {
                     i.ready = !i.ready;
@@ -174,7 +184,6 @@ public class App extends WebSocketServer {
                 }
             }
 
-            System.out.println("NUMREADY: " + numReady);
             ServerEvent sendBack = new ServerEvent(1, LobbyUsers);
             String jsonString = gson.toJson(sendBack);
             broadcast(jsonString);
@@ -262,7 +271,6 @@ public class App extends WebSocketServer {
         } else if (U.request == 5) { // User has started a game
             ArrayList<User> waitingList = new ArrayList<>();
 
-            System.out.println("NUM READY: " + numReady);
             if ((numReady > 1) && (ActiveGames.size() < 6)) {
                 System.out.println("ENTERED HERE");
                 // create player list and remove them from lobby
@@ -292,6 +300,7 @@ public class App extends WebSocketServer {
                 for (User x : waitingList) {
                     System.out.println(x.username);
                 }
+                System.out.println();
 
                 String filename = "words.txt";
                 ArrayList<String> wordList = new ArrayList<>();
@@ -326,6 +335,14 @@ public class App extends WebSocketServer {
             }
         } else if (U.request == 6) { // Update player scores for the current game
             updateScores(U.UserId);
+        }
+    }
+
+    public void forceDisconnect(int GameId) {
+        for (User u : ActiveUsers) {
+            if (u.GameId == GameId) {
+                u.conn.send("disconnect");
+            }
         }
     }
 
@@ -400,7 +417,6 @@ public class App extends WebSocketServer {
                         u.conn.send(gson.toJson(e));
                     }
                 }
-                System.out.println("All completed buttons in the game: " + g.AllCompletedButtons);
             }
 
         }
@@ -410,6 +426,7 @@ public class App extends WebSocketServer {
 
         // Set up the http server
         try {
+            appVersion = "--Filler. Deployment will change to correct hash--";
 
             String envPort = System.getenv("HTTP_PORT");
             System.out.println(envPort);
