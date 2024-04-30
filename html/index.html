@@ -349,7 +349,7 @@
             }
 
             if('request' in obj){   // USER EVENTS
-                if(obj.request == 1){   
+                if(obj.request == 1){ 
                     const lobbyBody = document.getElementById("lobby-body");
 
                     if(lobbyBody != null){
@@ -357,8 +357,9 @@
                     }
 
                     let LobbyUsers = obj.LobbyUsers;
+                    console.log("USERS IN LOBBY");
                     LobbyUsers.forEach(function (player) {
-
+                        console.log(player.user);
                         var row = lobbyBody.insertRow();
                         var name = row.insertCell(0);
                         var ready = row.insertCell(1);

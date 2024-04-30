@@ -272,7 +272,6 @@ public class App extends WebSocketServer {
             ArrayList<User> waitingList = new ArrayList<>();
 
             if ((numReady > 1) && (ActiveGames.size() < 6)) {
-                System.out.println("ENTERED HERE");
                 // create player list and remove them from lobby
                 for (int k = 0; k < LobbyUsers.size(); k++) {
                     if (LobbyUsers.get(k).ready == true) {
