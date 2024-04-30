@@ -121,10 +121,10 @@ public class App extends WebSocketServer {
                 }
             }
         }
-
-        String jsonString = gson.toJson(LobbyUsers);
-
-        broadcast(jsonString);
+        if (LobbyUsers != null) {
+            String jsonString = gson.toJson(LobbyUsers);
+            broadcast(jsonString);
+        }
 
         System.out.println(conn + " has closed");
     }
