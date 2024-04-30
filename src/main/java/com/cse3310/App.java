@@ -51,9 +51,36 @@ public class App extends WebSocketServer {
 
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.create();
 
+        int gameid = 0;
+        PlayerList list = new PlayerList();
         for (int i = 0; i < ActiveUsers.size(); i++) {
             if (ActiveUsers.get(i).conn == conn) {
+                // Find game the user is in
+                for (User user : ActiveUsers) {
+                    if (ActiveUsers.get(i).equals(user)) {
+                        gameid = user.GameId;
+                    }
+                }
+
+                // Fill list with player data from the game (EXCEPT THE USER THAT IS ABOUT TO
+                // LEAVE)
+                for (User user : ActiveUsers) {
+                    if (gameid == user.GameId && ActiveUsers.get(i).username != user.username) {
+                        list.players.add(user.username);
+                        list.playerScores.add(user.wordCount);
+                    }
+                }
+
+                // Send completed game list to all users in the specific game
+                for (User user : ActiveUsers) {
+                    if (gameid == user.GameId && ActiveUsers.get(i).username != user.username) {
+                        String jsonString = gson.toJson(list);
+                        user.conn.send(jsonString);
+                    }
+                }
                 System.out.println("removing " + ActiveUsers.get(i).username + " from player and lobby list");
                 String tempName = ActiveUsers.get(i).username;
 
@@ -70,8 +97,7 @@ public class App extends WebSocketServer {
                 break;
             }
         }
-        GsonBuilder builder = new GsonBuilder();
-        Gson gson = builder.create();
+
         String jsonString = gson.toJson(LobbyUsers);
         broadcast(jsonString);
 
