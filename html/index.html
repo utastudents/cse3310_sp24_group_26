@@ -57,10 +57,7 @@
             <div class="collapse navbar-collapse" id="toggleMobileMenu">
                 <ul class="navbar-nav ms-auto text-end">
                     <li>
-                        <a class="nav-link" href="#">HOME</a>
-                    </li>
-                    <li>
-                        <a class="nav-link" href="#profile" onclick="showProfile()"> PROFILE</a>
+                        <a class="nav-link" href="#" onclick="location.reload()">HOME</a>
                     </li>
                     <li>
                         <a class="nav-link" href="#contact">SUPPORT</a>
@@ -150,21 +147,16 @@
     <div data-aos="fade-up" class="container d-flex justify-content-center flex-column text-center h-auto pb-5 d-none" id="wordBank">
         <h1>WORD BANK</h1>
     </div>
-
-    <div class=" container-fluid custom-body d-none" id="profile">
-                        <div id="home"
-                            class="container-fluid text-center flex-column d-flex justify-content-center align-items-center"
-                            style="height: 100vh;">
-                            <h1 style="font-size: 5vw;">PROFILE</h1>
-                            <h2 id="profile_username"> USERNAME: </h2>
-                            <h3 id="profile_games_won">GAMES WON: </h3>
-                            <h3 id="profile_games_lost">GAMES LOST: </h3>
-                            <a class="btn btn-primary justify-content-center btn-lg active" onclick="hideProfile()"
-                                role="button" aria-pressed="true">HIDE</a>
-                        </div>
+    <div class=" container-fluid custom-body d-none" id="winScreen">
+        <div class="container-fluid text-center flex-column d-flex justify-content-center align-items-center"
+            style="height: 100vh;">
+            <h1 style="font-size: 5vw;">GAME WON</h1>
+            <h3 id="win_username"> USERNAME </h3>
+            <h3 id="win_score"> SCORE </h3>
+            <a class="btn btn-primary justify-content-center btn-lg active" onclick="hideWin()"
+                role="button" aria-pressed="true">HOME</a>
         </div>
-
-    </div>
+</div>
 
     <section data-aos="fade-up" id="contact">
         <div class="container-fluid custom-footer">
@@ -244,6 +236,17 @@
             }
 
             let obj = JSON.parse(msg);
+
+            if('won' in obj){   // User in the game won
+                document.getElementById("game").classList.add("d-none");
+                document.getElementById("wordBank").classList.add("d-none");
+
+                const winScreen = document.getElementById("winScreen");
+                winScreen.classList.remove("d-none");
+                
+                document.getElementById("win_username").textContent = "WINNER: " + obj.winner;
+                document.getElementById("win_score").textContent = "SCORE: " + obj.score;
+            }
 
             if('version' in obj){
                 console.log("version received: " + obj.version);
@@ -505,6 +508,10 @@
             }
         }
 
+        function hideWin(){
+            location.reload();
+        }
+
         function startMatchmaking() {
             U = new UserEvent;
             U.request = 5;
@@ -519,21 +526,6 @@
             U.UserId = this.UserId;
             connection.send(JSON.stringify(U));
         }
-
-        function showProfile() {
-            // Show profile elements
-            document.getElementById("profile").classList.remove("d-none");
-            document.getElementById("profile_username").innerText = "USERNAME: " + UserId.toUpperCase();
-            document.getElementById("profile_games_won").innerText = "GAMES WON: " + gamesWon;
-            document.getElementById("profile_games_lost").innerText = "GAMES LOST: " + gamesLost;
-
-        }
-
-        function hideProfile() {
-            // Hide profile elements
-            document.getElementById("profile").classList.add("d-none");
-        }
-
     </script>
 
     <script>

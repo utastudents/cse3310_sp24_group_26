@@ -4,6 +4,7 @@ com/cse3310/Lobby.class
 com/cse3310/timerEvent.class
 com/cse3310/App$LetterTimer.class
 com/cse3310/Game.class
+com/cse3310/Winner.class
 com/cse3310/Error.class
 com/cse3310/ServerEvent.class
 com/cse3310/HttpServer$1.class
