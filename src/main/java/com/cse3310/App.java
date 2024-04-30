@@ -520,7 +520,7 @@ public class App extends WebSocketServer {
             LetterTimer letterTimer = A.new LetterTimer();
 
             Timer timer = new Timer();
-            timer.scheduleAtFixedRate(letterTimer, 0, 2000);
+            timer.scheduleAtFixedRate(letterTimer, 0, 30000);
 
             String[] c = { "Red", "Green", "Blue", "Yellow", "Purple" };
 
