@@ -17,9 +17,9 @@ public class GameTest {
     public void addFourToScoreAndWins()
     {
         users.add(user);
-        user.gameWon+=4;
+        user.gamesWon+=4;
         //game.checkWin(user);
-        assertEquals(4, user.gameWon);
+        assertEquals(4, user.gamesWon);
         
     }
 }
