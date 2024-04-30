@@ -119,7 +119,8 @@ public class App extends WebSocketServer {
             }
         }
         if (LobbyUsers != null) {
-            String jsonString = gson.toJson(LobbyUsers);
+            ServerEvent sendBack = new ServerEvent(1, LobbyUsers);
+            String jsonString = gson.toJson(sendBack);
             broadcast(jsonString);
         }
 
