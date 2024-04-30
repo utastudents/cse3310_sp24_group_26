@@ -231,7 +231,6 @@ public class App extends WebSocketServer {
             int id = U.buttonId;
             int userIndex = 0;
             int gameid = 0;
-
             for (User user : ActiveUsers) {
                 if (U.UserId.equals(user.username)) {
                     gameid = user.GameId;
@@ -259,6 +258,12 @@ public class App extends WebSocketServer {
                     ActiveUsers.get(userIndex).wordCount++;
                     updateScores(U.UserId);
                 }
+            }
+
+            User possibleWinner = findWinner(gameid);
+            if (possibleWinner != null) { // Winner found
+                gameWon(possibleWinner);
+                return;
             }
 
             UserEvent e = new UserEvent();
@@ -346,6 +351,54 @@ public class App extends WebSocketServer {
             }
         } else if (U.request == 6) { // Update player scores for the current game
             updateScores(U.UserId);
+        }
+    }
+
+    public User findWinner(int GameId) {
+        int totalWordCount = 0;
+        Game g = ActiveGames.get(GameId);
+        int most = 0;
+        User winner = new User();
+
+        for (User u : ActiveUsers) {
+            if (GameId == u.GameId) {
+                if (u.wordCount > most) {
+                    most = u.wordCount; // Track user with highest score
+                    winner = u;
+                }
+
+                totalWordCount += u.wordCount;
+            }
+        }
+
+        System.out.println("Total word count: " + totalWordCount);
+        System.out.println("Word bank size: " + g.wordBank.size());
+        if (totalWordCount == g.wordBank.size()) {
+            return winner;
+        }
+
+        return null;
+    }
+
+    public void gameWon(User winner) {
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.create();
+        ArrayList<User> disconnectUsers = new ArrayList<>();
+
+        int wonGameId = winner.GameId;
+
+        for (User u : ActiveUsers) {
+            if (u.GameId == wonGameId) {
+                Winner e = new Winner(winner);
+                String jsonString = gson.toJson(e);
+                u.conn.send(jsonString);
+
+                disconnectUsers.add(u);
+            }
+        }
+
+        for (User u : disconnectUsers) {
+            ActiveUsers.remove(u);
         }
     }
 
