@@ -149,13 +149,13 @@ public class App extends WebSocketServer {
         }
 
         if (U.request == 1) { // New user logged in
+            if (U.UserId == "") {
+                Error err = new Error(U.UserId, "Error: Enter a username.");
+                conn.send(gson.toJson(err));
+                return;
+            }
 
             for (User a : ActiveUsers) {
-                if (U.UserId == "") {
-                    Error err = new Error(U.UserId, "Error: Enter a username.");
-                    conn.send(gson.toJson(err));
-                    return;
-                }
 
                 if (a.username.equals(U.UserId)) {
                     Error err = new Error(U.UserId, "Error: Username already exists. Enter another name.");
