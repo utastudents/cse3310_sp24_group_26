@@ -74,7 +74,7 @@ public class App extends WebSocketServer {
         // Fill list with player data from the game (EXCEPT THE USER THAT IS ABOUT TO
         // LEAVE)
         for (User user : ActiveUsers) {
-            if (gameid == user.GameId && thisUser.username != user.username) {
+            if ((gameid == user.GameId) && (thisUser.username != user.username) && (user.GameId != -1)) {
                 list.players.add(user.username);
                 list.playerScores.add(user.wordCount);
             }
@@ -83,7 +83,7 @@ public class App extends WebSocketServer {
         // Send completed game list to all users in the specific game
         int usersIngame = 0;
         for (User user : ActiveUsers) {
-            if (gameid == user.GameId && thisUser.username != user.username) {
+            if ((gameid == user.GameId) && (thisUser.username != user.username) && (user.GameId != -1)) {
                 usersIngame++;
                 String jsonString = gson.toJson(list);
                 user.conn.send(jsonString);
@@ -95,6 +95,7 @@ public class App extends WebSocketServer {
 
         for (int j = 0; j < LobbyUsers.size(); j++) {
             if (LobbyUsers.get(j).user.equals(tempName)) {
+                System.out.println("REMOVING: " + LobbyUsers.get(j).user + " FROM LOBBY");
                 if (LobbyUsers.get(j).ready == true) {
                     numReady--;
                 }
@@ -106,7 +107,7 @@ public class App extends WebSocketServer {
             ActiveUsers.remove(ActiveUsers.indexOf(thisUser));
         }
 
-        if (usersIngame < 2) {
+        if ((usersIngame < 2) && (list.players.size() != 0)) {
             forceDisconnect(gameid);
             for (User u : ActiveUsers) {
                 if (u.GameId == gameid) {
@@ -119,7 +120,8 @@ public class App extends WebSocketServer {
             }
         }
         if (LobbyUsers != null) {
-            String jsonString = gson.toJson(LobbyUsers);
+            ServerEvent sendBack = new ServerEvent(1, LobbyUsers);
+            String jsonString = gson.toJson(sendBack);
             broadcast(jsonString);
         }
 
