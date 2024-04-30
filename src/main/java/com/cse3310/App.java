@@ -30,7 +30,7 @@ public class App extends WebSocketServer {
     ArrayList<String> colors = new ArrayList<String>();
     int numReady = 0;
     int GameId = 0;
-    static String appVersion;
+    String appVersion = "";
 
     public App(int port) {
         super(new InetSocketAddress(port));
@@ -46,34 +46,85 @@ public class App extends WebSocketServer {
 
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.create();
+
+        ServerEvent sendBack = new ServerEvent(1, LobbyUsers);
+        String jsonString = gson.toJson(sendBack);
+        broadcast(jsonString);
         System.out.println(conn.getRemoteSocketAddress().getAddress().getHostAddress() + " connected");
     }
 
     @Override
     public void onClose(WebSocket conn, int code, String reason, boolean remote) {
-
-        for (int i = 0; i < ActiveUsers.size(); i++) {
-            if (ActiveUsers.get(i).conn == conn) {
-                System.out.println("removing " + ActiveUsers.get(i).username + " from player and lobby list");
-                String tempName = ActiveUsers.get(i).username;
-
-                for (int j = 0; j < LobbyUsers.size(); j++) {
-                    if (LobbyUsers.get(j).user.equals(tempName)) {
-                        if (LobbyUsers.get(j).ready == true) {
-                            numReady--;
-                        }
-                        LobbyUsers.remove(j);
-                    }
-
-                }
-                ActiveUsers.remove(i);
-                break;
-            }
-        }
         GsonBuilder builder = new GsonBuilder();
         Gson gson = builder.create();
-        String jsonString = gson.toJson(LobbyUsers);
-        broadcast(jsonString);
+
+        int gameid = 0;
+        PlayerList list = new PlayerList();
+        User thisUser = new User();
+
+        int found = 0;
+        for (User u : ActiveUsers) {
+            if (u.conn == conn) {
+                thisUser = u;
+                found = 1;
+            }
+        }
+
+        gameid = thisUser.GameId;
+
+        // Fill list with player data from the game (EXCEPT THE USER THAT IS ABOUT TO
+        // LEAVE)
+        for (User user : ActiveUsers) {
+            if (gameid == user.GameId && thisUser.username != user.username) {
+                list.players.add(user.username);
+                list.playerScores.add(user.wordCount);
+            }
+        }
+
+        // Send completed game list to all users in the specific game
+        int usersIngame = 0;
+        for (User user : ActiveUsers) {
+            if (gameid == user.GameId && thisUser.username != user.username) {
+                usersIngame++;
+                String jsonString = gson.toJson(list);
+                user.conn.send(jsonString);
+            }
+        }
+
+        System.out.println("removing " + thisUser.username + " from player and lobby list");
+        String tempName = thisUser.username;
+
+        for (int j = 0; j < LobbyUsers.size(); j++) {
+            if (LobbyUsers.get(j).user.equals(tempName)) {
+                if (LobbyUsers.get(j).ready == true) {
+                    numReady--;
+                }
+                LobbyUsers.remove(j);
+            }
+        }
+
+        if (ActiveUsers != null && found == 1) {
+            ActiveUsers.remove(ActiveUsers.indexOf(thisUser));
+        }
+
+        if (usersIngame < 2) {
+            forceDisconnect(gameid);
+            for (User u : ActiveUsers) {
+                if (u.GameId == gameid) {
+                    for (Lobby lobby : LobbyUsers) {
+                        if (u.username.equals(lobby.user)) {
+                            LobbyUsers.remove(lobby);
+                        }
+                    }
+                }
+            }
+        }
+        if (LobbyUsers != null) {
+            String jsonString = gson.toJson(LobbyUsers);
+            broadcast(jsonString);
+        }
 
         System.out.println(conn + " has closed");
     }
@@ -88,11 +139,11 @@ public class App extends WebSocketServer {
         System.out.println(U.UserId + " sent request " + U.request);
 
         if (U.request == 0) {
+            System.out.println("Version " + appVersion + " applied to title");
             appVersion = System.getenv("VERSION");
             Version version = new Version(appVersion);
 
             String jsonString = gson.toJson(version);
-            System.out.println("Broadcasted string: " + jsonString);
 
             broadcast(jsonString);
         }
@@ -130,13 +181,10 @@ public class App extends WebSocketServer {
             String jsonString = gson.toJson(sendBack);
             // broadcast(jsonString);
 
-            for (User a : ActiveUsers) {
-                a.conn.send(jsonString);
-            }
+            broadcast(jsonString);
 
         } else if (U.request == 2) // User readying or unreadying. Update on everyone's screen.
         {
-            System.out.println("ENTERED HERE");
             for (Lobby i : LobbyUsers) {
                 if (i.user.equals(U.UserId)) {
                     i.ready = !i.ready;
@@ -148,7 +196,6 @@ public class App extends WebSocketServer {
                 }
             }
 
-            System.out.println("NUMREADY: " + numReady);
             ServerEvent sendBack = new ServerEvent(1, LobbyUsers);
             String jsonString = gson.toJson(sendBack);
             broadcast(jsonString);
@@ -236,9 +283,7 @@ public class App extends WebSocketServer {
         } else if (U.request == 5) { // User has started a game
             ArrayList<User> waitingList = new ArrayList<>();
 
-            System.out.println("NUM READY: " + numReady);
             if ((numReady > 1) && (ActiveGames.size() < 6)) {
-                System.out.println("ENTERED HERE");
                 // create player list and remove them from lobby
                 for (int k = 0; k < LobbyUsers.size(); k++) {
                     if (LobbyUsers.get(k).ready == true) {
@@ -266,6 +311,7 @@ public class App extends WebSocketServer {
                 for (User x : waitingList) {
                     System.out.println(x.username);
                 }
+                System.out.println();
 
                 String filename = "words.txt";
                 ArrayList<String> wordList = new ArrayList<>();
@@ -300,6 +346,20 @@ public class App extends WebSocketServer {
             }
         } else if (U.request == 6) { // Update player scores for the current game
             updateScores(U.UserId);
+        }
+    }
+
+    public void forceDisconnect(int GameId) {
+        ArrayList<User> disconnectUsers = new ArrayList<>();
+        for (User u : ActiveUsers) {
+            if (u.GameId == GameId) {
+                u.conn.send("disconnect");
+                disconnectUsers.add(u);
+            }
+        }
+
+        for (User u : disconnectUsers) {
+            ActiveUsers.remove(ActiveUsers.indexOf(u));
         }
     }
 
@@ -374,7 +434,6 @@ public class App extends WebSocketServer {
                         u.conn.send(gson.toJson(e));
                     }
                 }
-                System.out.println("All completed buttons in the game: " + g.AllCompletedButtons);
             }
 
         }
@@ -384,7 +443,6 @@ public class App extends WebSocketServer {
 
         // Set up the http server
         try {
-
             String envPort = System.getenv("HTTP_PORT");
             System.out.println(envPort);
             int httpPort = 9026;
