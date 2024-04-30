@@ -426,8 +426,6 @@ public class App extends WebSocketServer {
 
         // Set up the http server
         try {
-            appVersion = "--Filler. Deployment will change to correct hash--";
-
             String envPort = System.getenv("HTTP_PORT");
             System.out.println(envPort);
             int httpPort = 9026;
