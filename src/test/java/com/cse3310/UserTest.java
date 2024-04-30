@@ -1,13 +1,14 @@
 package com.cse3310;
 import java.util.ArrayList;
 
+import org.java_websocket.WebSocket;
 import org.junit.Test;
 import static org.junit.Assert.assertTrue;
 
 public class UserTest {
-    User user1 = new User("");
-    User user2 = new User("");
-    //Game game = new Game();
+    public WebSocket conn;
+    User user1 = new User("",conn);
+    User user2 = new User("",conn);
     ArrayList<User> users = new ArrayList<>();
     /**
      * no duplicate usernames
