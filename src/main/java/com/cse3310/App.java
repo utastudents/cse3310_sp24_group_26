@@ -30,6 +30,7 @@ public class App extends WebSocketServer {
     ArrayList<String> colors = new ArrayList<String>();
     int numReady = 0;
     int GameId = 0;
+    static String appVersion;
 
     public App(int port) {
         super(new InetSocketAddress(port));
@@ -85,6 +86,16 @@ public class App extends WebSocketServer {
         Gson gson = builder.create();
         UserEvent U = gson.fromJson(message, UserEvent.class);
         System.out.println(U.UserId + " sent request " + U.request);
+
+        if (U.request == 0) {
+            appVersion = System.getenv("VERSION");
+            Version version = new Version(appVersion);
+
+            String jsonString = gson.toJson(version);
+            System.out.println("Broadcasted string: " + jsonString);
+
+            broadcast(jsonString);
+        }
 
         if (U.request == 1) { // New user logged in
 
@@ -373,7 +384,9 @@ public class App extends WebSocketServer {
 
         // Set up the http server
         try {
+
             String envPort = System.getenv("HTTP_PORT");
+            System.out.println(envPort);
             int httpPort = 9026;
             if (envPort != null) {
                 httpPort = Integer.valueOf(envPort);

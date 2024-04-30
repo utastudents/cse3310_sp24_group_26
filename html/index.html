@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title id="appName"></title>
+    <title id="title"></title>
     <meta name="author" content="Tien Dung Le">
     <!-- Fonts -->
     <!-- <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Chivo Mono"> -->
@@ -199,7 +199,6 @@
 
 
     <script src="bootstrap-5.3.3-dist/js/bootstrap.js"></script>
-    <script src="bootstrap-5.3.3-dist/js/js.js"></script>
     <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
 
     <script>AOS.init();</script>
@@ -227,7 +226,11 @@
         connection = new WebSocket(serverUrl);
 
         connection.onopen = function (evt) {
-            console.log("open");
+            e = new UserEvent();
+            e.request = 0;
+
+            connection.send(JSON.stringify(e));
+            console.log("user has connected");
         }
 
         // Received a broadcast from a different client
@@ -236,6 +239,12 @@
             msg = evt.data;
             console.log("Message received: " + msg);
             let obj = JSON.parse(msg);
+
+            if('version' in obj){
+                console.log("version received: " + obj.version);
+                const title = document.getElementById("title");
+                title.textContent = obj.title;
+            }
 
             if('timerButton' in obj){
                 console.log("Client has received a timer button: " + obj.timerButton);
