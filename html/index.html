@@ -20,28 +20,29 @@
             border-collapse: collapse;
             font-size: 12px;
         }
-        
+
         td {
             border: 1px solid #ccc;
             width: 20px;
-            height:20px;
+            height: 20px;
             text-align: center;
             line-height: 15px;
-            margin: 0; 
+            margin: 0;
         }
     </style>
 </head>
 
 <body>
-<div>
-    <div class="container-fluid custom-footer" data-aos="fade-down">
-        <nav class="navbar navbar-expand-sm navbar-dark container">
-            <a href="index.html" class="navbar-brand" ><img src="../asset/navBarIcon.png" width="200" height="70"></a>
+    <div>
+        <div class="container-fluid custom-footer" data-aos="fade-down">
+            <nav class="navbar navbar-expand-sm navbar-dark container">
+                <a href="index.html" class="navbar-brand"><img src="../asset/navBarIcon.png" width="200"
+                        height="70"></a>
 
 
-            <!-- Create ticket to fix this, doesn't respone on click  -->
-            
-            <!--
+                <!-- Create ticket to fix this, doesn't respone on click  -->
+
+                <!--
                 <button class="navbar-toggler collapsed d-flex d-lg-none flex-column justify-content-around" type="button"
                     data-bs-toggle="collapse" data-bs-target="#toggleMobileMenu" aria-controls="toggleMobileMenu"
                     aria-expanded="false" aria-label="Toggle navigation">
@@ -67,68 +68,64 @@
                     </li>
 
 
-                </ul>
-            </div>
-        </nav>
-    </div>
-    <div class="container-fluid custom-body" id="log-in">
-        <div id="home" class="container-fluid text-center flex-column d-flex justify-content-center align-items-center"
-            style="height: 100vh;">
-            <h1 style="font-size: 5vw;">READY TO SEARCH?</h1>
-            <h3 ID="readyHeader">THERE ARE # PLAYERS IN THE LOBBY</h3>
-            <h4 >ENTER YOUR USERNAME TO START</h4>
-            <form name="userForm">
-                <div class="input-group mb-2 ">
-                    <span class="input-group-text" id="basic-addon1">@</span>
-                    <input id="username" name="fname" type="text" class="form-control" placeholder="EX: JOHNLEE123" aria-label="Username"
-                        aria-describedby="basic-addon1">
+                    </ul>
                 </div>
-            </form>
-            <a class="btn btn-primary justify-content-center btn-lg active" onclick=buttonclicked(1) role="button" aria-pressed="true">
-                JOIN LOBBY
-            </a>
-            
+            </nav>
         </div>
-    </div>
+        <div class="container-fluid custom-body" id="log-in">
+            <div id="home"
+                class="container-fluid text-center flex-column d-flex justify-content-center align-items-center"
+                style="height: 100vh;">
+                <h1 style="font-size: 5vw;">READY TO SEARCH?</h1>
+                <h3 ID="readyHeader">THERE ARE # PLAYERS IN THE LOBBY</h3>
+                <h4>ENTER YOUR USERNAME TO START</h4>
+                <form name="userForm">
+                    <div class="input-group mb-2 ">
+                        <span class="input-group-text" id="basic-addon1">@</span>
+                        <input id="username" name="fname" type="text" class="form-control" placeholder="EX: JOHNLEE123"
+                            aria-label="Username" aria-describedby="basic-addon1">
+                    </div>
+                </form>
+                <a class="btn btn-primary justify-content-center btn-lg active" onclick=buttonclicked(1) role="button"
+                    aria-pressed="true">
+                    JOIN LOBBY
+                </a>
 
-    <div class="d-flex justify-content-center flex-column text-center h-auto pb-5 d-none" id="lobby">
-        <h1>LOBBY</h1>
-        
-        <table class="container table table-light h5">
-            <thead>
-                <tr>
-                    <td>USERNAME</td>
-                    <td>READY STATUS</td>
-                </tr>
-            </thead>
-            <tbody id="lobby-body">
-
-            </tbody>
-        </table>
-        <a class="btn btn-primary justify-content-center btn-lg active" onclick=buttonclicked(2)
-                role="button" aria-pressed="true">READY</a>
-        <a class="btn btn-primary justify-content-center btn-lg active" onclick=startMatchmaking()
-                role="button" aria-pressed="true">START GAME</a>
-    </div>
-
-    <div class="container-fluid custom-body h-auto d-none" id="game">
-        <div id="home" class="container-fluid text-center d-flex justify-content-center align-items-center py-3" style="height: fit-content">
-            <div class="container">
-                <div class="py-3 justify-content-center text-center flex-column d-flex container" id="grid">
-                    
-                </div>
             </div>
-            <div>
-                <table class="h4 table table-light">
-                    <tr class="h3">
-                        <td id="playerOneName">@</td>
-                        <td id="playerOneScore">1</td>
-                        <td>VS</td>
-                        <td id="playerOneScore">2</td>
-                        <td id="playerTwoName">@</td>
+        </div>
+
+        <div class="d-flex justify-content-center flex-column text-center h-auto pb-5 d-none" id="lobby">
+            <h1>LOBBY</h1>
+
+            <table class="container table table-light h5">
+                <thead>
+                    <tr>
+                        <td>USERNAME</td>
+                        <td>READY STATUS</td>
                     </tr>
+                </thead>
+                <tbody id="lobby-body">
+
+                </tbody>
+            </table>
+            <a class="btn btn-primary justify-content-center btn-lg active" onclick=buttonclicked(2) role="button"
+                aria-pressed="true">READY</a>
+            <a class="btn btn-primary justify-content-center btn-lg active" onclick=startMatchmaking() role="button"
+                aria-pressed="true">START GAME</a>
+        </div>
+
+        <div class="container-fluid custom-body h-auto d-none" id="game">
+            <div class="d-flex flex-wrap">
+                <table  class="h4 table table-light">
+                    <tbody id="playersInMatch">
+    
+                    </tbody>
                 </table>
-                <!-- Multi-user chat box -->
+                <div class="container">
+                    <div class="py-3 justify-content-center text-center flex-column d-flex container" id="grid">
+                        
+                    </div>
+                </div>
                 <div class="container-fluid">
                     <div class=" row justify-content-center">
                         <div class="col-md-8">
@@ -138,8 +135,10 @@
                                     <!-- Chat messages will be displayed here -->
                                 </div>
                                 <div class="card-footer container-fluid">
-                                    <input type="text" class="form-control" id="chatMessage" placeholder="Type your message">
-                                    <button class="btn btn-primary mt-2 container-fluid" id="sendMessage" onclick="sendChatMessage()">Send</button>
+                                    <input type="text" class="form-control" id="chatMessage"
+                                        placeholder="Type your message">
+                                    <button class="btn btn-primary mt-2 container-fluid" id="sendMessage"
+                                        onclick="sendChatMessage()">Send</button>
                                 </div>
                             </div>
                         </div>
@@ -153,17 +152,18 @@
         <h1>WORD BANK</h1>
     </div>
 
-    <div class="container-fluid custom-body d-none" id="profile">
-        <div id="home" class="container-fluid text-center flex-column d-flex justify-content-center align-items-center"
-            style="height: 100vh;">
-            <h1 style="font-size: 5vw;">PROFILE</h1>
-            <h2 id="profile_username"> USERNAME: </h2>
-            <h3 id="profile_games_won">GAMES WON: </h3>
-            <h3 id="profile_games_lost">GAMES LOST: </h3>
-            <a class="btn btn-primary justify-content-center btn-lg active" onclick="hideProfile()"
-                role="button" aria-pressed="true" >HIDE</a>
+    <div class=" container-fluid custom-body d-none" id="profile">
+                        <div id="home"
+                            class="container-fluid text-center flex-column d-flex justify-content-center align-items-center"
+                            style="height: 100vh;">
+                            <h1 style="font-size: 5vw;">PROFILE</h1>
+                            <h2 id="profile_username"> USERNAME: </h2>
+                            <h3 id="profile_games_won">GAMES WON: </h3>
+                            <h3 id="profile_games_lost">GAMES LOST: </h3>
+                            <a class="btn btn-primary justify-content-center btn-lg active" onclick="hideProfile()"
+                                role="button" aria-pressed="true">HIDE</a>
+                        </div>
         </div>
-    </div>
 
     </div>
 
@@ -173,8 +173,7 @@
                 <p class="display-1">CONTACT US:</p>
                 <ul class="list-unstyled">
                     <li class=" display-5">
-                        <a href=""
-                            class=" text-decoration-none text-light custom-contact-link" target="_blank">CUSTOMER
+                        <a href="" class=" text-decoration-none text-light custom-contact-link" target="_blank">CUSTOMER
                             SUPPORT</a>
                     </li>
                     <li class=" display-5">
@@ -195,7 +194,7 @@
             </footer>
         </div>
     </section>
-</div>
+    </div>
 
 
 
@@ -208,7 +207,7 @@
     <!-- <script src="usernameValidation.js"></script> -->
 
     <script>
-        class UserEvent{
+        class UserEvent {
             request;
             GameId;
             UserId;
@@ -227,13 +226,13 @@
 
         serverUrl = "ws://" + window.location.hostname + `:${parseInt(window.location.port) + 100}`;
         connection = new WebSocket(serverUrl);
-        
+
         connection.onopen = function (evt) {
             console.log("open");
         }
 
         // Received a broadcast from a different client
-        connection.onmessage = function(evt){
+        connection.onmessage = function (evt) {
             var msg;
             msg = evt.data;
             console.log("Message received: " + msg);
@@ -251,10 +250,33 @@
                 alert(obj.user + "\n" + obj.error);
             }
 
+            // User started a game. Update the list of players in the current game;
+            if('players' in obj){ 
+                console.log("Received player list: " + obj.players);
+                const listOfPlayers = obj.players;  // List of player names 
+                const listOfScores = obj.playerScores;  // List of scores
+                const playerTable = document.getElementById("playersInMatch")
+
+                if(playerTable != null){
+                    playerTable.innerHTML = "";
+                }
+                
+                let length = obj.players.length;
+                for(let i = 0; i < length; i++){
+                    const row = playerTable.insertRow();
+                    const name = row.insertCell(0);
+                    const score = row.insertCell(1);
+
+                    name.textContent = listOfPlayers[i];
+                    score.textContent = listOfScores[i];
+                }
+            }
+
 
             if('grid' in obj){ // Game sent from the server
                 console.log(obj.grid);
-                // Generate and display the word search
+
+                // Change screens to the game
                 document.getElementById("lobby").classList.add("d-none");
 
                 const lobby = document.getElementById("lobby");
@@ -263,6 +285,7 @@
                 document.getElementById("game").classList.remove("d-none");
                 document.getElementById("wordBank").classList.remove("d-none");
 
+                // Update the wordbank for the current game
                 const wordBank = obj.wordBank;
                 console.log("Wordbank from game sent by the server: " + wordBank);
 
@@ -297,6 +320,8 @@
                     }
                 }
 
+
+                //Generate the word search for the client
                 generateWordSearch(obj.grid);
                 console.log(obj.grid);
 
@@ -310,7 +335,7 @@
             }
 
             if('request' in obj){   // USER EVENTS
-                if(obj.request == 1){
+                if(obj.request == 1){   
                     const lobbyBody = document.getElementById("lobby-body");
 
                     if(lobbyBody != null){
@@ -318,16 +343,16 @@
                     }
 
                     let LobbyUsers = obj.LobbyUsers;
-                    LobbyUsers.forEach(function(player){
-                        
+                    LobbyUsers.forEach(function (player) {
+
                         var row = lobbyBody.insertRow();
                         var name = row.insertCell(0);
                         var ready = row.insertCell(1);
 
                         name.textContent = player.user;
-                        if(player.ready == false){
+                        if (player.ready == false) {
                             ready.textContent = "Not Ready";
-                        } else{
+                        } else {
                             ready.textContent = "Ready";
                         }
                     });
@@ -348,9 +373,10 @@
                     chatBox.appendChild(para);
                 }
 
-                if(obj.request == 4){   // Request # 4: Letter pressed.
+                if (obj.request == 4) {   // Request # 4: Letter pressed.
                     console.log("Letter pressed by " + obj.UserId + ": " + obj.buttonId + ". Button color is " + obj.color);
                     const button = document.getElementById(obj.buttonId);
+
                     let completedButtons = [];
                     completedButtons = obj.completedButtons;
                     console.log("Passed in array of completed buttons: " + completedButtons);
@@ -372,20 +398,18 @@
                     if(button.style.background === obj.color.toLowerCase()){ // Button previously pressed
                         button.style.background = "white";
                     }
-                    else{
+                    else {
                         button.style.background = obj.color.toLowerCase();  // New button
                         button.style.border = "";
                     }
                 }
             }
-
-
-            
         }
+        
 
-        function buttonclicked(value){
+        function buttonclicked(value) {
             U = new UserEvent;
-            if(value == 1){
+            if (value == 1) {
                 let username = document.getElementById("username").value;
                 this.UserId = username;
                 this.gamesLost = 0;
@@ -414,23 +438,23 @@
                 const lobby = document.getElementById("lobby");
                 lobby.classList.remove("d-none");
                 */
-            } else if (value == 2){
+            } else if (value == 2) {
                 U.UserId = this.UserId;
                 U.request = 2;
                 connection.send(JSON.stringify(U));
             }
         }
 
-        function sendChatMessage(){
+        function sendChatMessage() {
             const inputBox = document.getElementById("chatMessage");
             let msg = inputBox.value;
 
             let limit = 40;
 
-            if(msg == ""){
+            if (msg == "") {
                 alert("Enter a message: ");
             }
-            else if(msg.length > limit){
+            else if (msg.length > limit) {
                 alert("Message exceeds " + limit + " character limit. Try again.");
             }
             else{
@@ -454,37 +478,26 @@
                 U.gamesLost = this.gamesLost;
                 U.chatMessage = msg;
 
-                connection.send(JSON.stringify(U)); 
-                
+                connection.send(JSON.stringify(U));
+
                 // Empty message box after "sending"
                 inputBox.value = "";
             }
         }
 
-        //document.getElementById("startMatchmakingBtn").addEventListener("click", startMatchmaking);
-
         function startMatchmaking() {
-            // Hide matchmaking form
-            /*
-            document.getElementById("lobby").classList.add("d-none");
-
-            // Show game elements
-            document.getElementById("game").classList.remove("d-none");
-
-            // Update player names
-            document.getElementById("playerOneName").innerText = "@" + UserId.toUpperCase();
-            document.getElementById("playerTwoName").innerText = "@opponent"; // Replace "opponent" with actual opponent's name
-            */
-            // Start matchmaking process or any other game initialization logic
             U = new UserEvent;
             U.request = 5;
-            connection.send(JSON.stringify(U)); 
             U.gamesWon = 0;
             U.gamesLost = 0;
 
             connection.send(JSON.stringify(U));
             console.log("Player started the match: " + JSON.stringify(U));
 
+            U = new UserEvent;
+            U.request = 6;
+            U.UserId = this.UserId;
+            connection.send(JSON.stringify(U));
         }
 
         function showProfile() {
@@ -505,7 +518,7 @@
 
     <script>
         class Coordinate {
-            constructor(row, col){
+            constructor(row, col) {
                 this.row = row;
                 this.col = col;
             }
@@ -530,19 +543,16 @@
     </script>
 
     <script>
-        const wordsToFind = ['apple', 'banana', 'cherry', 'grape', 'orange', 'pear', 'kiwi', 'peach', 'mango','melon' ];
         const gridSize = 20;
         const gridDiv = document.getElementById('grid');
-        const wordListElement = document.getElementById('wordList');
-        const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
         // Function to generate the word search grid
         function generateWordSearch(grid) {
             let n = 0;
-            gridDiv.innerHTML = "";
 
             for (let i = 0; i < gridSize; i++) {
                 const div = document.createElement("div");
+                div.classList.add("w-auto");  // Bootstrap row class
                 gridDiv.appendChild(div);
 
                 for (let j = 0; j < gridSize; j++) {
