@@ -3,10 +3,7 @@ package com.cse3310;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.net.InetSocketAddress;
-import java.net.UnknownHostException;
-import java.nio.ByteBuffer;
 import java.util.Collections;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -411,8 +408,10 @@ public class App extends WebSocketServer {
             }
         }
 
-        for (User u : disconnectUsers) {
-            ActiveUsers.remove(ActiveUsers.indexOf(u));
+        if (disconnectUsers.isEmpty() != true) {
+            for (User u : disconnectUsers) {
+                ActiveUsers.remove(ActiveUsers.indexOf(u));
+            }
         }
     }
 
@@ -530,6 +529,5 @@ public class App extends WebSocketServer {
         } catch (NullPointerException e) { // Checks for environment variable
             e.printStackTrace();
         }
-
     }
 }
