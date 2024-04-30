@@ -45,28 +45,6 @@ public class App extends WebSocketServer {
 
     @Override
     public void onOpen(WebSocket conn, ClientHandshake handshake) {
-        /*
-         * String filename = "words.txt";
-         * //Read in file of words
-         * ArrayList<String> wordList = new ArrayList<>();
-         * try(BufferedReader br = new BufferedReader(new FileReader(filename)))
-         * {
-         * String line;
-         * while((line = br.readLine()) != null)
-         * {
-         * wordList.add(line.trim());
-         * }
-         * 
-         * }
-         * catch (IOException e)
-         * {
-         * System.err.println("Error reading file:"+ e.getMessage());
-         * }
-         * GsonBuilder builder = new GsonBuilder();
-         * Gson gson = builder.create();
-         * String jsonString = gson.toJson(LobbyUsers);
-         * broadcast(jsonString);
-         */
         System.out.println(conn.getRemoteSocketAddress().getAddress().getHostAddress() + " connected");
     }
 
@@ -111,6 +89,12 @@ public class App extends WebSocketServer {
         if (U.request == 1) { // New user logged in
 
             for (User a : ActiveUsers) {
+                if (U.UserId == "") {
+                    Error err = new Error(U.UserId, "Error: Enter a username.");
+                    conn.send(gson.toJson(err));
+                    return;
+                }
+
                 if (a.username.equals(U.UserId)) {
                     Error err = new Error(U.UserId, "Error: Username already exists. Enter another name.");
                     conn.send(gson.toJson(err));
@@ -194,9 +178,6 @@ public class App extends WebSocketServer {
                 if (U.UserId.equals(user.username)) {
                     gameid = user.GameId;
                     userIndex = ActiveUsers.indexOf(user);
-
-                    System.out.println("gameid = " + gameid);
-                    System.out.println("user.GameId = " + user.GameId);
                 }
             }
 
@@ -218,6 +199,7 @@ public class App extends WebSocketServer {
                     g.AllCompletedButtons.addAll(g.CompletedButtons);
 
                     ActiveUsers.get(userIndex).wordCount++;
+                    updateScores(U.UserId);
                 }
             }
 
@@ -234,7 +216,6 @@ public class App extends WebSocketServer {
 
             for (User u : ActiveUsers) {
                 if (u.GameId == gameid) {
-                    System.out.println("User " + u.username + " assigned game " + gameid);
                     u.conn.send(jsonString);
                 }
             }
@@ -288,23 +269,56 @@ public class App extends WebSocketServer {
                 }
 
                 Game g = new Game(wordList, GameId);
+
                 ActiveGames.add(g);
 
                 // send game to those who are ready
                 for (User u : waitingList) {
                     for (User user : ActiveUsers) {
                         if (user == u) {
-                            System.out.println("User being assigned to game: " + GameId);
+                            System.out.println("User " + user.username + " assigned to game: " + GameId);
                             user.GameId = GameId;
                         }
                     }
 
                     jsonString = gson.toJson(ActiveGames.get(GameId));
                     u.conn.send(jsonString);
-                    System.out.println("Game started. User set to game " + u.GameId);
                 }
 
                 GameId++;
+            }
+        } else if (U.request == 6) { // Update player scores for the current game
+            updateScores(U.UserId);
+        }
+    }
+
+    public void updateScores(String UserId) {
+        GsonBuilder builder = new GsonBuilder();
+        Gson gson = builder.create();
+
+        PlayerList list = new PlayerList();
+        int gameid = 0;
+
+        // Find game the user is in
+        for (User user : ActiveUsers) {
+            if (UserId.equals(user.username)) {
+                gameid = user.GameId;
+            }
+        }
+
+        // Fill list with player data from the game
+        for (User user : ActiveUsers) {
+            if (gameid == user.GameId) {
+                list.players.add(user.username);
+                list.playerScores.add(user.wordCount);
+            }
+        }
+
+        // Send completed game list to all users in the specific game
+        for (User user : ActiveUsers) {
+            if (gameid == user.GameId) {
+                String jsonString = gson.toJson(list);
+                user.conn.send(jsonString);
             }
         }
     }
