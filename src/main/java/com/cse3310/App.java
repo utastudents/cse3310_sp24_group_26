@@ -499,7 +499,7 @@ public class App extends WebSocketServer {
             System.out.println(envPort);
             int httpPort = 9026;
             if (envPort != null) {
-                httpPort = Integer.valueOf("envPort");
+                httpPort = Integer.valueOf(envPort);
             }
 
             HttpServer H = new HttpServer(httpPort, "./html");
