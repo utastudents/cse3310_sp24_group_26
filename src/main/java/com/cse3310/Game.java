@@ -209,21 +209,20 @@ public class Game
         System.out.println("Horizontals: " +  (horizontals/index));
         System.out.println("Downward verticals: " + (vertDown/index));
         System.out.println("Upward verticals:" + (vertUp/index));
-        System.out.println(" Actual Density: " + (double) validWordsLetters / (length * width));
+
         // Fill in rest of the grid with random letters
-        // Print grid
+        // Print grid to console for debugging
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < length; j++) {
-                if (grid[i][j] == 0) {
+                if (grid[i][j] == 0)
+                {
 
                     grid[i][j] = alphabet.charAt(rand.nextInt(alphabet.length()));
-                    System.out.printf(" |");
-
                 }
-                else
-                {
+              
+             
                     System.out.printf("" + grid[i][j] + "|");
-                }
+              
   
             }
             System.out.println();
