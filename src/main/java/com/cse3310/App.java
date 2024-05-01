@@ -367,9 +367,6 @@ public class App extends WebSocketServer {
                 totalWordCount += u.wordCount;
             }
         }
-
-        System.out.println("Total word count: " + totalWordCount);
-        System.out.println("Word bank size: " + g.wordBank.size());
         if (totalWordCount == g.wordBank.size()) {
             return winner;
         }

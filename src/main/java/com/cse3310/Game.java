@@ -15,6 +15,17 @@ public class Game {
     public ArrayList<Integer> CompletedButtons;
     public ArrayList<Integer> AllCompletedButtons;
 
+    public Game() {
+        this.wordBank = new ArrayList<String>();
+        this.startIds = new ArrayList<Integer>();
+        this.endIds = new ArrayList<Integer>();
+        this.playerNames = new ArrayList<String>();
+        this.ActiveButtons = new ArrayList<Integer>();
+        this.CompletedButtons = new ArrayList<Integer>();
+        this.AllCompletedButtons = new ArrayList<Integer>();
+        this.GameId = 0;
+    }
+
     public Game(ArrayList<String> words, int GameId) {
         this.wordBank = new ArrayList<String>();
         this.startIds = new ArrayList<Integer>();
@@ -167,9 +178,6 @@ public class Game {
                 startIds.add(startId);
                 endIds.add(endId);
 
-                System.out.println("Start: " + startId + "\n" + "End: " + endId);
-
-                System.out.println(index + "." + wordBank.get(index));
                 validWordsLetters = validWordsLetters + wordBank.get(index).length();
                 index++;
             }
@@ -192,6 +200,8 @@ public class Game {
         }
         double endTime = System.currentTimeMillis();
         System.out.println("Time to generate grid: " + (endTime - startTime) + " ms");
+        System.out.println("Word Bank: " + wordBank);
+        System.out.println();
 
         return grid;
 

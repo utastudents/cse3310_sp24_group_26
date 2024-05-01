@@ -1,120 +1,112 @@
 package com.cse3310;
 //import static org.junit.Assert.assertArrayEquals;
 
-import static org.junit.Assert.assertArrayEquals;
+import org.java_websocket.WebSocket;
+
+import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.Random;
+import java.util.Vector;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * Unit test for simple App.
  */
-public class AppTest 
-    extends TestCase
-{
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
-    public AppTest( String testName )
-    {
-        super( testName );
-    }
+public class AppTest {
+    public WebSocket conn;
+    User user1 = new User(" ", conn);
+    User user2 = new User(" ", conn);
+    Vector<Game> ActiveGames = new Vector<Game>();
+    Vector<User> ActiveUsers = new Vector<User>();
 
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite()
-    {
-        return new TestSuite( AppTest.class );
-    }
+    public User findWinner(int GameId) {
+        int totalWordCount = 0;
+        Game g = ActiveGames.get(GameId);
+        int most = 0;
+        User winner = new User();
 
-    /**
-     * Rigourous Test :-)
-     */
-    public void testApp()
-    {
-        assertTrue( true );
-    }
+        for (User u : ActiveUsers) {
+            if (GameId == u.GameId) {
+                if (u.wordCount > most) {
+                    most = u.wordCount; // Track user with highest score
+                    winner = u;
+                }
 
-        public void testGame()
-    {
-        assertTrue( true );
-    }
-
-    public void EndIdCase(Game G)
-    {
-        ArrayList<Integer> array = new ArrayList<>();
-        for (int i = 0; i < 47; i++) {
-            array.add(1);
+                totalWordCount += u.wordCount;
+            }
         }
 
-        G.endIds = array;
+        if (totalWordCount == g.wordBank.size()) {
+            return winner;
+        }
 
-        assertTrue(G.isEnd(1) == 0);
+        return null;
     }
 
-    public void testEndIdCase()
-    {
-        ArrayList<String> stringList = new ArrayList<>();
+    @Test
+    public void testFindWinner() {
+        // Create game
+        Game g = new Game();
+        g.GameId = 0;
+        g.wordBank.add("A");
+        g.wordBank.add("B");
 
-        // Add elements to the ArrayList
-        stringList.add("Apple");
-        stringList.add("Banana");
-        stringList.add("Orange");
+        assertEquals(2, g.wordBank.size());
 
-        Game B = new Game(stringList, 1);
-        
-        EndIdCase(B);
+        ActiveGames.add(g);
+
+        // Set stats
+        user1.username = "user1";
+        user1.GameId = 0;
+        user1.wordCount = 2;
+
+        user2.username = "user2";
+        user2.GameId = 0;
+        user2.wordCount = 0;
+
+        ActiveUsers.add(user1);
+        ActiveUsers.add(user2);
+
+        // Test for winner of the game
+        assertEquals(user1, findWinner(g.GameId));
     }
 
+    public void gameWon(User winner) {
+        ArrayList<User> disconnectUsers = new ArrayList<>();
 
-    public void getCompletedButtonsCase(Game G)
-    {
-        ArrayList<Integer> array = new ArrayList<>();
-        array.add(6);
-        array.add(7);
-        array.add(8);
-        array.add(9);
-        array.add(10);
-        array.add(11);
+        int wonGameId = winner.GameId;
 
-        ArrayList<Integer> result = G.getCompletedButtons(6, 11);
+        for (User u : ActiveUsers) {
+            if (u.GameId == wonGameId) {
+                Winner e = new Winner(winner);
+                disconnectUsers.add(u);
+            }
+        }
 
-
-        assertTrue(result.containsAll(array) == array.containsAll(result));
+        for (User u : disconnectUsers) {
+            ActiveUsers.remove(u);
+        }
     }
 
-    public void testGetCompletedButtons()
-    {
-        ArrayList<String> stringList = new ArrayList<>();
-        stringList.add("Apple");
-        Game B = new Game(stringList, 1);
-        
-        getCompletedButtonsCase(B);
+    @Test
+    public void testGameWon() {
+        ActiveUsers.clear();
+        ActiveGames.clear();
+
+        User winner = new User();
+        winner.GameId = 0;
+        user1.GameId = 0;
+        user2.GameId = 0;
+
+        ActiveUsers.add(user1);
+        ActiveUsers.add(user2);
+        ActiveUsers.add(winner);
+
+        gameWon(winner);
+
+        // Active users in the game should be cleared out
+        assertEquals(0, ActiveUsers.size());
     }
-
-    public void GenerateGrid(Game G) { 
-        // Create a Game object 
-        ArrayList<String> stringList = new ArrayList<>(); 
-        
-        // Add elements to the ArrayList 
-        stringList.add("CAT");
-        char[][] result = G.generateGrid(stringList, new ArrayList<>()); 
-        assertEquals(20, result.length); 
-        } 
-
-    public void testGenerateGrid() 
-    { 
-        ArrayList<String> stringList = new ArrayList<>(); 
-        stringList.add("App"); 
-        Game B = new Game(stringList, 1); 
-        GenerateGrid(B); 
-    } 
-
 }
