@@ -3,7 +3,8 @@ package com.cse3310;
 import java.util.ArrayList;
 import java.util.Random;
 
-public class Game {
+public class Game
+{ 
 
     public int GameId;
     public char[][] grid;
@@ -28,7 +29,8 @@ public class Game {
         this.grid = generateGrid(words, wordBank);
     }
 
-    public int isEnd(int id) {
+    public int isEnd(int id)
+    {
         for (int endId : endIds) {
             if (id == endId) {
                 return 0;
@@ -105,11 +107,14 @@ public class Game {
         int[][] directions = { { 1, 1 }, { -1, 1 }, { 0, 1 }, { -1, 0 }, { 1, 0 } };
         double density = .67; // density of grid
         int maxLength = 10;
+        float diagUp,diagDown,horizontals,vertUp,vertDown; // stats to see orientations
+        diagUp = diagDown = horizontals = vertUp = vertDown = 0;
         // Input words into the array
         // Take random words from the word list to put inside a word bank
         int index = 0;
-        while (((double) validWordsLetters / (length * width)) < density) {
-
+        while (((double) validWordsLetters / (length * width)) < density)
+        {
+        //Grab a word and add it to a word length
             String word = words.get(rand.nextInt(words.size())).toUpperCase();
             while (word.length() > maxLength) {
                 word = words.get(rand.nextInt(words.size())).toUpperCase();
@@ -122,7 +127,7 @@ public class Game {
                 fits = true;
                 startX = rand.nextInt(length);
                 startY = rand.nextInt(width);
-                orientation = rand.nextInt(4);
+                orientation = rand.nextInt(5);
                 dX = directions[orientation][1];
                 dY = directions[orientation][0];
                 int secondCheck = 0;
@@ -147,8 +152,11 @@ public class Game {
                         }
                     }
                 }
+
             } while (fits == false && tries < 100);
-            if (tries >= 100) {
+
+            if (tries >= 100)
+            {
                 fits = false;
                 wordBank.remove(index);
             }
@@ -169,24 +177,53 @@ public class Game {
 
                 System.out.println("Start: " + startId + "\n" + "End: " + endId);
 
+
+                if(dY == 0)
+                {
+                    horizontals++;
+                }
+                else if(dY == 1)
+                {
+                    if(dX == 1)
+                    diagUp++;
+                    else
+                    vertUp++;
+                }
+                else if(dY == -1)
+                {   
+                    if(dX == 1)
+                    diagDown++;
+                    else
+                    vertDown++;
+                }
                 System.out.println(index + "." + wordBank.get(index));
                 validWordsLetters = validWordsLetters + wordBank.get(index).length();
                 index++;
             }
-
+                
         }
-        System.out.println(" Actual Density: " + (double) validWordsLetters / (length * width));
+
+        System.out.println("Actual Density: " + (double)validWordsLetters / (length * width));
+        System.out.println("Upward Diagonals: " + (diagUp/index));
+        System.out.println("Downward Diagonals: " + (diagDown/index));
+        System.out.println("Horizontals: " +  (horizontals/index));
+        System.out.println("Downward verticals: " + (vertDown/index));
+        System.out.println("Upward verticals:" + (vertUp/index));
+
         // Fill in rest of the grid with random letters
-        // Print grid
+        // Print grid to console for debugging
         for (int i = 0; i < width; i++) {
             for (int j = 0; j < length; j++) {
-                if (grid[i][j] == 0) {
+                if (grid[i][j] == 0)
+                {
 
                     grid[i][j] = alphabet.charAt(rand.nextInt(alphabet.length()));
                 }
-
-                System.out.printf("" + grid[i][j] + "|");
-
+              
+             
+                    System.out.printf("" + grid[i][j] + "|");
+              
+  
             }
             System.out.println();
         }
@@ -196,6 +233,7 @@ public class Game {
         return grid;
 
     }
+
 
     public void checkWin(User user) {
 
@@ -209,3 +247,4 @@ public class Game {
 
     }
 }
+    
