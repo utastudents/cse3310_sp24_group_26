@@ -2,8 +2,6 @@ package com.cse3310;
 
 import java.util.ArrayList;
 import java.util.Random;
-import java.util.Collections;
-import java.time.Clock;
 
 public class Game
 { 
@@ -13,6 +11,7 @@ public class Game
     public ArrayList<String> wordBank;
     public ArrayList<Integer> startIds;
     public ArrayList<Integer> endIds;
+    public ArrayList<String> playerNames;
     public ArrayList<Integer> ActiveButtons;
     public ArrayList<Integer> CompletedButtons;
     public ArrayList<Integer> AllCompletedButtons;
@@ -21,6 +20,7 @@ public class Game
         this.wordBank = new ArrayList<String>();
         this.startIds = new ArrayList<Integer>();
         this.endIds = new ArrayList<Integer>();
+        this.playerNames = new ArrayList<String>();
         this.ActiveButtons = new ArrayList<Integer>();
         this.CompletedButtons = new ArrayList<Integer>();
         this.AllCompletedButtons = new ArrayList<Integer>();

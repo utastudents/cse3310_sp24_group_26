@@ -11,6 +11,10 @@ public class User {
     public WebSocket conn;
     public int GameId;
 
+    public User() {
+
+    }
+
     public User(String username, WebSocket conn) {
         this.username = username;
         this.conn = conn;
