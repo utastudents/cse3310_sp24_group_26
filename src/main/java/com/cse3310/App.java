@@ -106,7 +106,7 @@ public class App extends WebSocketServer {
             ActiveUsers.remove(ActiveUsers.indexOf(thisUser));
         }
 
-        if (usersIngame < 2) {
+        if ((usersIngame < 2) && (gameid != -1)) {
             forceDisconnect(gameid);
             for (User u : ActiveUsers) {
                 if (u.GameId == gameid) {
@@ -119,7 +119,8 @@ public class App extends WebSocketServer {
             }
         }
         if (LobbyUsers != null) {
-            String jsonString = gson.toJson(LobbyUsers);
+            ServerEvent sendBack = new ServerEvent(1, LobbyUsers);
+            String jsonString = gson.toJson(sendBack);
             broadcast(jsonString);
         }
 
