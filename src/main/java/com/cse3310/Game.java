@@ -15,6 +15,9 @@ public class Game
     public ArrayList<Integer> ActiveButtons;
     public ArrayList<Integer> CompletedButtons;
     public ArrayList<Integer> AllCompletedButtons;
+    public double gridDensity;
+    public double gridTime;
+
 
     public Game(ArrayList<String> words, int GameId) {
         this.wordBank = new ArrayList<String>();
@@ -204,6 +207,7 @@ public class Game
         }
 
         System.out.println("Actual Density: " + (double)validWordsLetters / (length * width));
+        this.gridDensity = (double)validWordsLetters / (length * width);
         System.out.println("Upward Diagonals: " + (diagUp/index));
         System.out.println("Downward Diagonals: " + (diagDown/index));
         System.out.println("Horizontals: " +  (horizontals/index));
@@ -229,6 +233,7 @@ public class Game
         }
         double endTime = System.currentTimeMillis();
         System.out.println("Time to generate grid: " + (endTime - startTime) + " ms");
+        this.gridTime = endTime - startTime;
 
         return grid;
 
