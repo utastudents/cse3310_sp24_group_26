@@ -14,6 +14,9 @@ public class Game {
     public ArrayList<Integer> ActiveButtons;
     public ArrayList<Integer> CompletedButtons;
     public ArrayList<Integer> AllCompletedButtons;
+    public double gridDensity;
+    public double gridTime;
+
 
     public Game() {
         this.wordBank = new ArrayList<String>();
@@ -204,12 +207,13 @@ public class Game {
 
         }
 
-        System.out.println("Actual Density: " + (double) validWordsLetters / (length * width));
-        System.out.println("Upward Diagonals: " + (diagUp / index));
-        System.out.println("Downward Diagonals: " + (diagDown / index));
-        System.out.println("Horizontals: " + (horizontals / index));
-        System.out.println("Downward verticals: " + (vertDown / index));
-        System.out.println("Upward verticals:" + (vertUp / index));
+        System.out.println("Actual Density: " + (double)validWordsLetters / (length * width));
+        this.gridDensity = (double)validWordsLetters / (length * width);
+        System.out.println("Upward Diagonals: " + (diagUp/index));
+        System.out.println("Downward Diagonals: " + (diagDown/index));
+        System.out.println("Horizontals: " +  (horizontals/index));
+        System.out.println("Downward verticals: " + (vertDown/index));
+        System.out.println("Upward verticals:" + (vertUp/index));
 
         // Fill in rest of the grid with random letters
         // Print grid to console for debugging
@@ -227,6 +231,7 @@ public class Game {
         }
         double endTime = System.currentTimeMillis();
         System.out.println("Time to generate grid: " + (endTime - startTime) + " ms");
+        this.gridTime = endTime - startTime;
         System.out.println("Word Bank: " + wordBank);
         System.out.println();
 
