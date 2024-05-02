@@ -526,7 +526,6 @@ public class App extends WebSocketServer {
             System.out.println("websocket Server started on port: " + socketPort);
         } catch (NullPointerException e) { // Checks for environment variable
             e.printStackTrace();
-            
         }
     }
 }
